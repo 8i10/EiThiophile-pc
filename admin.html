@@ -18,6 +18,7 @@
     --accent-dim: rgba(201,169,110,0.12);
     --danger: #c47070;
     --success: #70c490;
+    --header-h: 56px;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,7 +36,7 @@
   }
   @media (max-width: 700px) {
     .admin-layout { grid-template-columns: 1fr; }
-    .sidebar { position: static; border-right: none; border-bottom: 1px solid var(--border); }
+    .sidebar { position: static; border-right: none; border-bottom: 1px solid var(--border); height: auto; }
   }
 
   /* ── Sidebar ── */
@@ -94,8 +95,7 @@
   .char-delete-btn {
     background: none; border: none; color: var(--border);
     cursor: pointer; font-size: 0.8rem; padding: 0.1rem 0.3rem;
-    transition: color 0.15s;
-    flex-shrink: 0;
+    transition: color 0.15s; flex-shrink: 0;
   }
   .char-delete-btn:hover { color: var(--danger); }
 
@@ -113,45 +113,58 @@
   }
   .btn-new:hover { background: rgba(201,169,110,0.2); }
 
-  /* ── Main ── */
-  main { padding: 2rem; overflow-y: auto; }
-
-  .main-header {
+  /* ── Main wrapper ── */
+  .main-wrapper {
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+  }
+  @media (max-width: 700px) { .main-wrapper { height: auto; } }
+
+  /* ── Sticky top header bar ── */
+  .edit-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: var(--header-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+    padding: 0 2rem;
     gap: 1rem;
+    flex-shrink: 0;
   }
-  .main-title { font-size: 1.5rem; font-weight: 200; letter-spacing: 0.15em; }
-  .main-subtitle { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
-
-  .btn-group { display: flex; gap: 0.5rem; }
-
-  .btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.5rem 1.25rem;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.15s;
+  .edit-header-left { display: flex; flex-direction: column; gap: 0.1rem; overflow: hidden; }
+  .edit-header-name {
+    font-size: 1.1rem;
+    font-weight: 200;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .btn:hover { border-color: var(--accent); color: var(--accent); }
-  .btn.primary { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-  .btn.primary:hover { background: rgba(201,169,110,0.22); }
-  .btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+  .edit-header-id { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+  .edit-header-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
-  /* ── Form ── */
+  /* ── Scrollable form area ── */
+  .main-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+  }
+
+  /* ── Empty state ── */
   .empty-state {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%;
     padding: 6rem 2rem; color: var(--muted); text-align: center; gap: 1rem;
   }
   .empty-icon { font-size: 2.5rem; opacity: 0.3; }
 
+  /* ── Form ── */
   .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -182,12 +195,7 @@
   }
   input:focus, textarea:focus, select:focus { border-color: var(--accent); }
   textarea { resize: vertical; min-height: 80px; line-height: 1.8; }
-
-  input[type="color"] {
-    padding: 0.2rem;
-    height: 2.2rem;
-    cursor: pointer;
-  }
+  input[type="color"] { padding: 0.2rem; height: 2.2rem; cursor: pointer; }
 
   .section-divider {
     font-family: 'Cormorant Garamond', serif;
@@ -201,7 +209,7 @@
     grid-column: 1 / -1;
   }
 
-  /* Portrait preview */
+  /* Portrait */
   .portrait-section {
     grid-column: 1 / -1;
     display: flex;
@@ -228,16 +236,28 @@
     gap: 0.5rem;
     grid-column: 1 / -1;
   }
-  @media (max-width: 500px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+  .stats-grid-6 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+  }
+  .stats-grid-db {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+  }
+  @media (max-width: 500px) {
+    .stats-grid, .stats-grid-6, .stats-grid-db { grid-template-columns: repeat(2,1fr); }
+  }
 
   .stat-input-group { display: flex; flex-direction: column; gap: 0.3rem; }
   .stat-input-group label { text-align: center; }
   .stat-input-group input { text-align: center; }
 
-  /* Skills / Sessions tags input */
-  .tags-input-wrap {
-    display: flex; flex-direction: column; gap: 0.5rem;
-  }
+  /* Tags */
+  .tags-input-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
   .tags-display { display: flex; flex-wrap: wrap; gap: 0.4rem; min-height: 2rem; }
   .tag-chip {
     background: var(--accent-dim);
@@ -247,10 +267,7 @@
     padding: 0.15rem 0.5rem;
     display: flex; align-items: center; gap: 0.3rem;
   }
-  .tag-chip button {
-    background: none; border: none; color: inherit;
-    cursor: pointer; font-size: 0.7rem; padding: 0; line-height: 1;
-  }
+  .tag-chip button { background: none; border: none; color: inherit; cursor: pointer; font-size: 0.7rem; padding: 0; line-height: 1; }
   .tag-add-row { display: flex; gap: 0.4rem; }
   .tag-add-row input { flex: 1; }
   .tag-add-btn {
@@ -260,22 +277,54 @@
     font-family: 'Noto Serif JP', serif;
   }
 
-  /* ── Toast ── */
-  .toast {
-    position: fixed; bottom: 2rem; right: 2rem;
-    background: var(--surface);
-    border: 1px solid var(--success);
-    color: var(--success);
-    padding: 0.75rem 1.5rem;
-    font-size: 0.78rem;
+  /* Buttons */
+  .btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.45rem 1.1rem;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s;
-    z-index: 999;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
   }
-  .toast.show { opacity: 1; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .btn.primary:hover { background: rgba(201,169,110,0.22); }
+  .btn.danger { border-color: rgba(196,112,112,0.4); color: var(--danger); }
+  .btn.danger:hover { border-color: var(--danger); background: rgba(196,112,112,0.1); }
 
-  /* ── JSON export area ── */
+  /* Delete zone */
+  .delete-zone {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .delete-zone-label {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* Notice */
+  .notice {
+    background: var(--accent-dim);
+    border: 1px solid rgba(201,169,110,0.25);
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .notice strong { color: var(--accent); }
+  .notice code { background: rgba(255,255,255,0.05); padding: 0.1rem 0.3rem; font-size: 0.72rem; }
+
+  /* JSON area */
   .json-area {
     background: var(--bg);
     border: 1px solid var(--border);
@@ -289,16 +338,20 @@
     margin-top: 1rem;
   }
 
-  .notice {
-    background: var(--accent-dim);
-    border: 1px solid rgba(201,169,110,0.25);
-    padding: 0.75rem 1rem;
-    font-size: 0.75rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-top: 1rem;
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--success);
+    color: var(--success);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 999;
   }
-  .notice strong { color: var(--accent); }
+  .toast.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -310,30 +363,59 @@
     <div class="sidebar-title">✦ 探索者編集</div>
     <div class="char-list" id="charList"></div>
     <button class="btn-new" onclick="createNew()">＋ 新しい探索者を追加</button>
+    <button class="btn-new" style="background:rgba(100,160,200,0.1);border-color:#6ab0d4;color:#6ab0d4;margin-top:0.25rem" onclick="document.getElementById('importFileInput').click()">
+      📥 キャラシJSONをインポート
+    </button>
+    <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(this)">
     <a href="index.html" style="text-decoration:none">
       <button class="btn" style="width:100%;margin-top:0.5rem">← 一覧ページへ戻る</button>
     </a>
   </aside>
 
   <!-- Main -->
-  <main id="mainArea">
-    <div class="empty-state">
-      <div class="empty-icon">✦</div>
-      <div>左のリストから探索者を選ぶか、<br>新しく追加してください</div>
+  <div class="main-wrapper">
+
+    <!-- Sticky header (shown when a character is selected) -->
+    <div class="edit-header" id="editHeader" style="display:none">
+      <div class="edit-header-left">
+        <div class="edit-header-name" id="editHeaderName">—</div>
+        <div class="edit-header-id" id="editHeaderId"></div>
+      </div>
+      <div class="edit-header-actions">
+        <button class="btn primary" onclick="saveChar()">保存</button>
+      </div>
     </div>
-  </main>
+
+    <!-- Scrollable form area -->
+    <div id="mainArea" class="main-scroll">
+      <div class="empty-state">
+        <div class="empty-icon">✦</div>
+        <div>左のリストから探索者を選ぶか、<br>新しく追加してください</div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <div class="toast" id="toast">保存しました</div>
 
 <script>
-// ── State ──
 let characters = [];
 let currentId = null;
-let skills = [];
 let sessions = [];
 
-// ── Init ──
+// Dropbox URL変換（共有リンク → 直接表示URL）
+function fixDropboxUrl(url) {
+  if (!url) return url;
+  if (url.includes('dropbox.com')) {
+    return url
+      .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
+      .replace(/[?&]dl=\d/, '')
+      .replace(/[?&]raw=\d/, '');
+  }
+  return url;
+}
+
 async function init() {
   try {
     const res = await fetch('characters.json?t=' + Date.now());
@@ -342,7 +424,6 @@ async function init() {
   renderSidebar();
 }
 
-// ── Sidebar ──
 function renderSidebar() {
   const list = document.getElementById('charList');
   if (!characters.length) {
@@ -352,7 +433,7 @@ function renderSidebar() {
   list.innerHTML = characters.map(c => `
     <div class="char-item ${c.id === currentId ? 'active' : ''}" onclick="selectChar('${c.id}')">
       <div class="char-avatar">
-        ${c.image ? `<img src="${c.image}" alt="">` : c.name.charAt(0)}
+        ${c.image ? `<img src="${fixDropboxUrl(c.image)}" alt="">` : (c.name.charAt(0) || '?')}
       </div>
       <span class="char-item-name">${c.name}</span>
       <button class="char-delete-btn" onclick="event.stopPropagation();deleteChar('${c.id}')" title="削除">✕</button>
@@ -360,7 +441,6 @@ function renderSidebar() {
   `).join('');
 }
 
-// ── Select ──
 function selectChar(id) {
   currentId = id;
   const c = characters.find(x => x.id === id);
@@ -368,14 +448,13 @@ function selectChar(id) {
   renderForm(c);
 }
 
-// ── Create new ──
 function createNew() {
   const id = Date.now().toString();
   const c = {
-    id, name: '新しい探索者', nameEn: '', age: '', occupation: '',
-    concept: '', image: '', color: '#7c9bb5',
-    stats: { STR:50, CON:50, SIZ:50, DEX:50, APP:50, INT:50, POW:50, EDU:60 },
-    skills: [], profile: '', quote: '', player: '',
+    id, name: '', furigana: '', age: '', occupation: '',
+    image: '', color: '#7c9bb5',
+    stats: { STR:'', CON:'', POW:'', DEX:'', APP:'', SIZ:'', INT:'', EDU:'', HP:'', MP:'', SAN:'', アイデア:'', 幸運:'', 知識:'', DB:'' },
+    profile: '', quote: '',
     sessions: [], status: '生存'
   };
   characters.push(c);
@@ -384,47 +463,40 @@ function createNew() {
   renderForm(c);
 }
 
-// ── Delete ──
 function deleteChar(id) {
   if (!confirm('この探索者を削除しますか？')) return;
   characters = characters.filter(c => c.id !== id);
   if (currentId === id) {
     currentId = null;
+    document.getElementById('editHeader').style.display = 'none';
     document.getElementById('mainArea').innerHTML = `
       <div class="empty-state"><div class="empty-icon">✦</div><div>探索者を選択してください</div></div>`;
   }
   renderSidebar();
 }
 
-// ── Form ──
 function renderForm(c) {
-  skills = [...(c.skills || [])];
   sessions = [...(c.sessions || [])];
 
-  document.getElementById('mainArea').innerHTML = `
-    <div class="main-header">
-      <div>
-        <div class="main-title">${c.name}</div>
-        <div class="main-subtitle">ID: ${c.id}</div>
-      </div>
-      <div class="btn-group">
-        <button class="btn primary" onclick="saveChar()">保存</button>
-        <button class="btn danger" onclick="deleteChar('${c.id}')">削除</button>
-      </div>
-    </div>
+  // ヘッダー更新
+  const header = document.getElementById('editHeader');
+  header.style.display = 'flex';
+  document.getElementById('editHeaderName').textContent = c.name;
+  document.getElementById('editHeaderId').textContent = 'ID: ' + c.id;
 
+  document.getElementById('mainArea').innerHTML = `
     <div class="form-grid">
 
       <!-- 基本情報 -->
       <div class="section-divider">基本情報</div>
 
       <div class="form-group">
-        <label>名前（漢字）</label>
-        <input id="f-name" value="${esc(c.name)}">
+        <label>PC名</label>
+        <input id="f-name" value="${esc(c.name)}" placeholder="PC名を入力" oninput="document.getElementById('editHeaderName').textContent=this.value||'—'">
       </div>
       <div class="form-group">
-        <label>名前（ローマ字）</label>
-        <input id="f-nameEn" value="${esc(c.nameEn)}">
+        <label>ふりがな</label>
+        <input id="f-furigana" value="${esc(c.furigana)}">
       </div>
       <div class="form-group">
         <label>年齢</label>
@@ -433,14 +505,6 @@ function renderForm(c) {
       <div class="form-group">
         <label>職業</label>
         <input id="f-occupation" value="${esc(c.occupation)}">
-      </div>
-      <div class="form-group">
-        <label>コンセプト（一言）</label>
-        <input id="f-concept" value="${esc(c.concept)}">
-      </div>
-      <div class="form-group">
-        <label>担当PL</label>
-        <input id="f-player" value="${esc(c.player)}">
       </div>
       <div class="form-group">
         <label>ステータス</label>
@@ -460,22 +524,23 @@ function renderForm(c) {
       <div class="portrait-section">
         <div class="portrait-preview" id="portraitPreview">
           ${c.image
-            ? `<img src="${esc(c.image)}" alt="">`
+            ? `<img src="${fixDropboxUrl(esc(c.image))}" alt="">`
             : `<div class="portrait-placeholder-text">画像なし</div>`}
         </div>
         <div class="portrait-inputs">
           <div class="form-group">
-            <label>画像URL（外部リンク or GitHubリポジトリ内パス）</label>
+            <label>画像URL / Dropbox共有リンク / リポジトリ内パス</label>
             <input id="f-image" value="${esc(c.image)}"
-              placeholder="images/rin.png  または  https://..." 
+              placeholder="images/rin.png  または  Dropbox共有URLを貼る"
               oninput="previewImage(this.value)">
           </div>
           <div class="notice">
-            <strong>画像の配置方法：</strong><br>
-            リポジトリ内に <code>images/</code> フォルダを作り、<br>
-            ファイルをアップロードして相対パスで指定できます。<br>
-            （例: <code>images/rin.png</code>）<br>
-            外部サービスのURLを直接貼ることも可能です。
+            <strong>Dropboxの場合：</strong><br>
+            共有リンク（<code>dropbox.com/s/…</code>）をそのまま貼ればOKです。<br>
+            自動で直接表示URLに変換します。<br><br>
+            <strong>GitHubリポジトリ内の場合：</strong><br>
+            <code>images/</code> フォルダに画像をアップして<br>
+            <code>images/rin.png</code> のように入力してください。
           </div>
         </div>
       </div>
@@ -491,27 +556,35 @@ function renderForm(c) {
         <input id="f-quote" value="${esc(c.quote)}">
       </div>
 
-      <!-- スキル -->
-      <div class="section-divider">主要技能</div>
-      <div class="form-group full">
-        <div class="tags-input-wrap">
-          <div class="tags-display" id="skillsTags"></div>
-          <div class="tag-add-row">
-            <input id="skillInput" placeholder="技能名を入力" onkeydown="if(event.key==='Enter'){addTag('skill');event.preventDefault()}">
-            <button class="tag-add-btn" onclick="addTag('skill')">追加</button>
-          </div>
-        </div>
-      </div>
+      <!-- ステータス（六版） -->
+      <div class="section-divider">ステータス（六版）</div>
 
-      <!-- 能力値 -->
-      <div class="section-divider">能力値</div>
+      <div class="stats-group-label" style="grid-column:1/-1;font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;margin-bottom:-0.25rem">基本能力値</div>
       <div class="stats-grid">
-        ${['STR','CON','SIZ','DEX','APP','INT','POW','EDU'].map(stat => `
+        ${['STR','CON','POW','DEX','APP','SIZ','INT','EDU'].map(stat => `
           <div class="stat-input-group">
             <label>${stat}</label>
-            <input id="stat-${stat}" type="number" min="1" max="99" value="${c.stats?.[stat] ?? 50}">
+            <input id="stat-${stat}" type="number" min="1" max="99" value="${c.stats?.[stat] ?? ''}">
           </div>
         `).join('')}
+      </div>
+
+      <div class="stats-group-label" style="grid-column:1/-1;font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;margin-top:0.75rem;margin-bottom:-0.25rem">二次ステータス</div>
+      <div class="stats-grid stats-grid-6">
+        ${['HP','MP','SAN','アイデア','幸運','知識'].map(stat => `
+          <div class="stat-input-group">
+            <label>${stat}</label>
+            <input id="stat-${stat}" type="number" min="0" max="99" value="${c.stats?.[stat] ?? ''}">
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="stats-group-label" style="grid-column:1/-1;font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;margin-top:0.75rem;margin-bottom:-0.25rem">ダメージボーナス</div>
+      <div class="stats-grid stats-grid-db">
+        <div class="stat-input-group">
+          <label>DB</label>
+          <input id="stat-DB" value="${esc(c.stats?.DB ?? '')}" placeholder="例: +1d4">
+        </div>
       </div>
 
       <!-- シナリオ -->
@@ -531,18 +604,23 @@ function renderForm(c) {
       <div class="form-group full">
         <div class="notice">
           <strong>GitHub Pagesでの更新方法：</strong><br>
-          ① 下の「JSONをコピー」ボタンでデータをコピー<br>
-          ② GitHubリポジトリの <code>characters.json</code> を開いて内容を置き換えて保存<br>
-          ③ GitHub Pagesが自動で再デプロイ（通常1〜2分）
+          ① 「保存」後に「JSONをコピー」ボタンを押す<br>
+          ② GitHubリポジトリの <code>characters.json</code> の内容を置き換えて保存<br>
+          ③ GitHub Pagesが自動再デプロイ（通常1〜2分）
         </div>
         <button class="btn primary" style="margin-top:0.75rem" onclick="exportJSON()">📋 characters.json をコピー</button>
         <textarea class="json-area" id="jsonArea" readonly placeholder="「保存」後にJSONが表示されます"></textarea>
       </div>
 
+      <!-- 削除ゾーン（最下部） -->
+      <div class="delete-zone">
+        <div class="delete-zone-label">DANGER ZONE</div>
+        <button class="btn danger" onclick="deleteChar('${c.id}')">この探索者を削除する</button>
+      </div>
+
     </div>
   `;
 
-  renderTags('skill');
   renderTags('session');
 }
 
@@ -550,85 +628,79 @@ function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── Tags ──
 function renderTags(type) {
-  const arr = type === 'skill' ? skills : sessions;
-  const el = document.getElementById(type === 'skill' ? 'skillsTags' : 'sessionsTags');
+  const arr = sessions;
+  const el = document.getElementById('sessionsTags');
   if (!el) return;
   el.innerHTML = arr.map((t, i) => `
     <span class="tag-chip">${t}
-      <button onclick="removeTag('${type}', ${i})">✕</button>
+      <button onclick="removeTag(${i})">✕</button>
     </span>
   `).join('');
 }
 
 function addTag(type) {
-  const inputId = type === 'skill' ? 'skillInput' : 'sessionInput';
-  const input = document.getElementById(inputId);
+  const input = document.getElementById('sessionInput');
   const val = input.value.trim();
   if (!val) return;
-  if (type === 'skill') skills.push(val);
-  else sessions.push(val);
+  sessions.push(val);
   input.value = '';
-  renderTags(type);
+  renderTags('session');
 }
 
-function removeTag(type, i) {
-  if (type === 'skill') skills.splice(i, 1);
-  else sessions.splice(i, 1);
-  renderTags(type);
+function removeTag(i) {
+  sessions.splice(i, 1);
+  renderTags('session');
 }
 
-// ── Preview ──
 function previewImage(url) {
   const preview = document.getElementById('portraitPreview');
   if (!preview) return;
+  const fixed = fixDropboxUrl(url);
   preview.innerHTML = url
-    ? `<img src="${url}" alt="" onerror="this.parentElement.innerHTML='<div class=portrait-placeholder-text>読み込み失敗</div>'">`
+    ? `<img src="${fixed}" alt="" onerror="this.parentElement.innerHTML='<div class=portrait-placeholder-text>読み込み失敗</div>'">`
     : `<div class="portrait-placeholder-text">画像なし</div>`;
 }
 
-// ── Save ──
 function saveChar() {
   const idx = characters.findIndex(c => c.id === currentId);
   if (idx === -1) return;
 
   const c = characters[idx];
-  c.name = document.getElementById('f-name').value.trim() || c.name;
-  c.nameEn = document.getElementById('f-nameEn').value.trim();
-  c.age = document.getElementById('f-age').value.trim();
+  c.name       = document.getElementById('f-name').value.trim() || c.name;
+  c.furigana   = document.getElementById('f-furigana').value.trim();
+  c.age        = document.getElementById('f-age').value.trim();
   c.occupation = document.getElementById('f-occupation').value.trim();
-  c.concept = document.getElementById('f-concept').value.trim();
-  c.player = document.getElementById('f-player').value.trim();
-  c.status = document.getElementById('f-status').value;
-  c.color = document.getElementById('f-color').value;
-  c.image = document.getElementById('f-image').value.trim();
-  c.profile = document.getElementById('f-profile').value.trim();
-  c.quote = document.getElementById('f-quote').value.trim();
-  c.skills = [...skills];
-  c.sessions = [...sessions];
+  c.status     = document.getElementById('f-status').value;
+  c.color      = document.getElementById('f-color').value;
+  c.image      = document.getElementById('f-image').value.trim();
+  c.profile    = document.getElementById('f-profile').value.trim();
+  c.quote      = document.getElementById('f-quote').value.trim();
+  c.sessions   = [...sessions];
 
   c.stats = {};
-  ['STR','CON','SIZ','DEX','APP','INT','POW','EDU'].forEach(stat => {
+  ['STR','CON','POW','DEX','APP','SIZ','INT','EDU','HP','MP','SAN','アイデア','幸運','知識'].forEach(stat => {
     const el = document.getElementById('stat-' + stat);
-    c.stats[stat] = el ? parseInt(el.value) || 50 : 50;
+    if (el) c.stats[stat] = el.value === '' ? '' : (parseInt(el.value) || '');
   });
+  const dbEl = document.getElementById('stat-DB');
+  if (dbEl) c.stats['DB'] = dbEl.value.trim();
 
   characters[idx] = c;
   renderSidebar();
 
-  // Show JSON
   const json = JSON.stringify(characters, null, 2);
   const jsonArea = document.getElementById('jsonArea');
   if (jsonArea) jsonArea.value = json;
 
+  document.getElementById('editHeaderName').textContent = c.name;
   showToast('保存しました ✓');
 }
 
 function exportJSON() {
   const json = JSON.stringify(characters, null, 2);
   navigator.clipboard.writeText(json).then(() => {
-    showToast('JSONをクリップボードにコピーしました ✓');
+    showToast('JSONをコピーしました ✓');
   }).catch(() => {
     const jsonArea = document.getElementById('jsonArea');
     if (jsonArea) { jsonArea.value = json; jsonArea.select(); }
@@ -636,7 +708,7 @@ function exportJSON() {
   });
 }
 
-function showToast(msg = '保存しました ✓') {
+function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
@@ -644,6 +716,114 @@ function showToast(msg = '保存しました ✓') {
 }
 
 init();
+
+// ── インポート ──
+function handleImportFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const raw = JSON.parse(e.target.result);
+      const c = convertCharaSheet(raw);
+      characters.push(c);
+      currentId = c.id;
+      renderSidebar();
+      renderForm(c);
+      showToast('インポートしました ✓');
+    } catch (err) {
+      alert('JSONの読み込みに失敗しました。\n' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = ''; // 同じファイルを再度選べるようにリセット
+}
+
+// いあきゃら等のキャラシJSON → characters.json形式に変換
+function convertCharaSheet(raw) {
+  const inp = raw.inputs || {};
+  const id = Date.now().toString();
+
+  // ステータス変換
+  // 六版: STR/CON/POW/DEX/APP/SIZ/INT/EDU は3d6 or 2d6+6ベース → 実数値
+  // HP = (CON + SIZ) / 2、MP = POW、SAN = POW×5 が基本だが
+  // いあきゃら形式では数値がそのまま入る
+  const n = (v) => { const x = parseInt(v); return isNaN(x) ? '' : x; };
+
+  // SAN現在値はsan_now、最大はPOW×5
+  const sanNow = n(inp.san_now);
+  const pow    = n(inp.pow);
+  const hp     = inp.hp_t ? n(inp.hp_t) : (inp.con && inp.siz ? Math.floor((n(inp.con) + n(inp.siz)) / 2) : '');
+  const mp     = inp.mp_t ? n(inp.mp_t) : (pow !== '' ? pow : '');
+  const idea   = inp.idea_t ? n(inp.idea_t) : (n(inp.int_v) !== '' ? n(inp.int_v) * 5 : '');
+  const luck   = inp.luck_t ? n(inp.luck_t) : (pow !== '' ? pow * 5 : '');
+  const know   = inp.know_t ? n(inp.know_t) : (n(inp.edu) !== '' ? n(inp.edu) * 5 : '');
+
+  // ダメージボーナス計算（六版標準）
+  function calcDB(str, siz) {
+    const s = parseInt(str) || 0;
+    const sz = parseInt(siz) || 0;
+    const total = s + sz;
+    if (total <= 12)  return '-1d6';
+    if (total <= 16)  return '-1d4';
+    if (total <= 24)  return '0';
+    if (total <= 32)  return '+1d4';
+    if (total <= 40)  return '+1d6';
+    return '+2d6';
+  }
+  const db = calcDB(inp.str, inp.siz);
+
+  // シナリオ一覧：scenarios は改行区切りの文字列 or 配列
+  let sessions = [];
+  if (Array.isArray(raw.scenarios)) {
+    sessions = raw.scenarios.flatMap(s => s.split('\n').map(l => l.trim()).filter(Boolean));
+  } else if (typeof raw.scenarios === 'string') {
+    sessions = raw.scenarios.split('\n').map(l => l.trim()).filter(Boolean);
+  }
+
+  // プロフィール：memosの最初のbodyを使用
+  const profileBody = (raw.memos || []).map(m => m.body || '').join('\n\n').trim();
+
+  // ステータスマッピング
+  const status = inp.pc_status === 'dead' ? '死亡'
+               : inp.pc_status === 'missing' ? '不明'
+               : inp.pc_status === 'retire' ? '引退'
+               : '生存';
+
+  // カラー（txtcolorがあればそのまま使用）
+  const color = inp.txtcolor || '#7c9bb5';
+
+  return {
+    id,
+    name:       inp.pcname  || '',
+    furigana:   inp.furigana || '',
+    age:        inp.age      || '',
+    occupation: inp.job      || '',
+    image:      '',
+    color,
+    stats: {
+      STR:    n(inp.str),
+      CON:    n(inp.con),
+      POW:    pow,
+      DEX:    n(inp.dex),
+      APP:    n(inp.app),
+      SIZ:    n(inp.siz),
+      INT:    n(inp.int_v),
+      EDU:    n(inp.edu),
+      HP:     hp,
+      MP:     mp,
+      SAN:    sanNow !== '' ? sanNow : (pow !== '' ? pow * 5 : ''),
+      アイデア: idea,
+      幸運:   luck,
+      知識:   know,
+      DB:     db,
+    },
+    profile:  profileBody,
+    quote:    '',
+    sessions,
+    status,
+  };
+}
 </script>
 </body>
 </html>
