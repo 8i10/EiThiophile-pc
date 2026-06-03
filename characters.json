@@ -38,9 +38,10 @@
       "幽蛍火(KPレス)"
     ],
     "status": "生存",
-    "imagePos": "53% 0%",
+    "imagePos": "48% 1%",
     "category": "「天神会」関係",
     "traits": [],
-    "birthday": ""
+    "birthday": "",
+    "imageScale": 2.95
   }
 ]
