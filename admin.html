@@ -649,11 +649,9 @@ async function pushToGitHub() {
       'X-GitHub-Api-Version': '2022-11-28',
     };
 
-    // 毎回最新のSHAを取得（ブラウザキャッシュを避けるためtimestamp付き）
+    // 毎回最新のSHAを取得（timestamp付きでキャッシュ回避）
     let sha = '';
-    const getRes = await fetch(apiUrl + `?ref=${s.branch}&t=${Date.now()}`, {
-      headers: { ...headers, 'Cache-Control': 'no-cache' }
-    });
+    const getRes = await fetch(apiUrl + `?ref=${s.branch}&t=${Date.now()}`, { headers });
     if (getRes.ok) {
       const data = await getRes.json();
       sha = data.sha;
@@ -943,65 +941,82 @@ function removeTag(i) {
 }
 
 // ── ドラッグクロップ（object-position % 方式）──
-// ドラッグ量をpx→%変換してobject-positionに直接反映
-// この値はそのままindex.htmlのobject-positionに使える
+let _cropDragging = false;
+let _cropLastX = 0, _cropLastY = 0;
+let _cropOx = 50, _cropOy = 20;
+let _cropWrapRef = null;
+
+function _cropOnMouseMove(e) {
+  if (!_cropDragging) return;
+  _cropMove(e.clientX, e.clientY);
+}
+function _cropOnMouseUp() {
+  _cropDragging = false;
+  if (_cropWrapRef) _cropWrapRef.style.cursor = 'grab';
+}
+function _cropOnTouchMove(e) {
+  if (!_cropDragging) return;
+  e.preventDefault();
+  _cropMove(e.touches[0].clientX, e.touches[0].clientY);
+}
+
+// グローバルリスナーは一度だけ登録
+window.addEventListener('mousemove', _cropOnMouseMove);
+window.addEventListener('mouseup',   _cropOnMouseUp);
+window.addEventListener('touchmove', _cropOnTouchMove, { passive: false });
+window.addEventListener('touchend',  _cropOnMouseUp);
+
+function _cropApplyPos() {
+  const img = document.getElementById('cropImg');
+  if (!img) return;
+  img.style.objectPosition = `${_cropOx.toFixed(1)}% ${_cropOy.toFixed(1)}%`;
+  const idx = characters.findIndex(ch => ch.id === currentId);
+  if (idx !== -1) characters[idx].imagePos = `${_cropOx.toFixed(1)}% ${_cropOy.toFixed(1)}%`;
+}
+
+function _cropMove(ex, ey) {
+  const wrap = document.getElementById('cropWrap');
+  const dx = ex - _cropLastX, dy = ey - _cropLastY;
+  _cropLastX = ex; _cropLastY = ey;
+  const W = (wrap ? wrap.offsetWidth  : 120) || 120;
+  const H = (wrap ? wrap.offsetHeight : 160) || 160;
+  // 左にドラッグ → 表示位置を右へ（反転）
+  _cropOx -= (dx / W) * 100 * 0.5;
+  _cropOy -= (dy / H) * 100 * 0.5;
+  _cropOx = Math.max(0, Math.min(100, _cropOx));
+  _cropOy = Math.max(0, Math.min(100, _cropOy));
+  _cropApplyPos();
+}
 
 function initCrop(c) {
   const wrap = document.getElementById('cropWrap');
-  const img  = document.getElementById('cropImg');
-  if (!wrap || !img) return;
+  if (!wrap) return;
+  _cropWrapRef = wrap;
 
-  // 現在のimagePos（"50% 20%"形式）を読む
-  let ox = 50, oy = 20;
+  // 保存済みimagePos を復元
+  _cropOx = 50; _cropOy = 20;
   if (c.imagePos && c.imagePos.includes('%')) {
     const parts = c.imagePos.trim().split(/\s+/);
-    ox = parseFloat(parts[0]) ?? 50;
-    oy = parseFloat(parts[1]) ?? 20;
+    _cropOx = parseFloat(parts[0]) || 50;
+    _cropOy = parseFloat(parts[1]) || 20;
   }
+  _cropApplyPos();
 
-  function applyPos() {
-    img.style.objectPosition = `${ox.toFixed(1)}% ${oy.toFixed(1)}%`;
-    const idx = characters.findIndex(ch => ch.id === currentId);
-    if (idx !== -1) characters[idx].imagePos = `${ox.toFixed(1)}% ${oy.toFixed(1)}%`;
-  }
-  applyPos();
-
-  // ドラッグ: px移動量を画像の表示サイズに対する%差分に変換
-  let dragging = false, lastX = 0, lastY = 0;
-  const WRAP_W = wrap.offsetWidth  || 120;
-  const WRAP_H = wrap.offsetHeight || 160;
-
-  function onStart(ex, ey) {
-    dragging = true; lastX = ex; lastY = ey;
+  // mousedown / touchstart はwrapに直接（renderFormのたびに付け直す）
+  // 古いリスナーをクリアするためwrapのonmousedown/ontouchstartを上書き
+  wrap.onmousedown = e => {
+    e.preventDefault();
+    _cropDragging = true;
+    _cropLastX = e.clientX;
+    _cropLastY = e.clientY;
     wrap.style.cursor = 'grabbing';
-  }
-  function onMove(ex, ey) {
-    if (!dragging) return;
-    const dx = ex - lastX, dy = ey - lastY;
-    lastX = ex; lastY = ey;
-    // ドラッグ方向を反転（画像を引っ張るイメージ）
-    // px移動量をwrap幅に対する%に変換（感度係数で調整）
-    const sensitivity = 0.4;
-    ox -= (dx / WRAP_W) * 100 * sensitivity;
-    oy -= (dy / WRAP_H) * 100 * sensitivity;
-    ox = Math.max(0, Math.min(100, ox));
-    oy = Math.max(0, Math.min(100, oy));
-    applyPos();
-  }
-  function onEnd() { dragging = false; wrap.style.cursor = 'grab'; }
-
-  // 既存リスナーを避けるためwrapを複製して付け直す簡易対策
-  const newWrap = wrap.cloneNode(true);
-  wrap.parentNode.replaceChild(newWrap, wrap);
-  const newImg = newWrap.querySelector('#cropImg');
-  if (newImg) newImg.style.objectPosition = `${ox.toFixed(1)}% ${oy.toFixed(1)}%`;
-
-  newWrap.addEventListener('mousedown', e => { e.preventDefault(); onStart(e.clientX, e.clientY); });
-  window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
-  window.addEventListener('mouseup', onEnd);
-  newWrap.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
-  newWrap.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
-  newWrap.addEventListener('touchend', onEnd);
+  };
+  wrap.ontouchstart = e => {
+    e.preventDefault();
+    _cropDragging = true;
+    _cropLastX = e.touches[0].clientX;
+    _cropLastY = e.touches[0].clientY;
+  };
 }
 
 function previewImage(url) {
