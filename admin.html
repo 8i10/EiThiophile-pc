@@ -352,6 +352,72 @@
     z-index: 999;
   }
   .toast.show { opacity: 1; }
+  .toast.error { border-color: var(--danger); color: var(--danger); }
+
+  /* GitHub設定モーダル */
+  .gh-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .gh-modal-overlay.open { opacity: 1; pointer-events: all; }
+  .gh-modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    width: 100%; max-width: 480px;
+    padding: 2rem;
+    position: relative;
+  }
+  .gh-modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.5rem;
+  }
+  .gh-modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); width: 1.8rem; height: 1.8rem;
+    cursor: pointer; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .gh-modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .gh-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+  .gh-field label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .gh-status {
+    margin-top: 0.75rem;
+    font-size: 0.72rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    display: none;
+  }
+  .gh-status.ok  { border-color: rgba(112,196,144,0.5); color: var(--success); display: block; }
+  .gh-status.err { border-color: rgba(196,112,112,0.5); color: var(--danger);  display: block; }
+
+  /* GitHubに反映ボタン（ヘッダー内） */
+  .btn-push {
+    background: rgba(100,160,100,0.1);
+    border: 1px solid rgba(100,160,100,0.5);
+    color: #7cc47c;
+    padding: 0.45rem 1.1rem;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-push:hover { background: rgba(100,160,100,0.2); border-color: #7cc47c; }
+  .btn-push:disabled { opacity: 0.4; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -367,10 +433,47 @@
       📥 キャラシJSONをインポート
     </button>
     <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(this)">
+    <button class="btn" style="width:100%;margin-top:0.5rem;border-color:rgba(201,169,110,0.4);color:var(--accent)" onclick="openGhSettings()">
+      ⚙ GitHub設定
+    </button>
     <a href="index.html" style="text-decoration:none">
-      <button class="btn" style="width:100%;margin-top:0.5rem">← 一覧ページへ戻る</button>
+      <button class="btn" style="width:100%;margin-top:0.25rem">← 一覧ページへ戻る</button>
     </a>
   </aside>
+
+  <!-- GitHub設定モーダル -->
+  <div class="gh-modal-overlay" id="ghModalOverlay">
+    <div class="gh-modal">
+      <button class="gh-modal-close" onclick="closeGhSettings()">✕</button>
+      <div class="gh-modal-title">⚙ GitHub 設定</div>
+      <div class="gh-field">
+        <label>リポジトリ（owner/repo）</label>
+        <input id="gh-repo" placeholder="例: 8i10/EiThiophile-pc">
+      </div>
+      <div class="gh-field">
+        <label>ブランチ</label>
+        <input id="gh-branch" placeholder="main">
+      </div>
+      <div class="gh-field">
+        <label>characters.jsonのパス</label>
+        <input id="gh-path" placeholder="characters.json">
+      </div>
+      <div class="gh-field">
+        <label>Personal Access Token（Fine-grained推奨）</label>
+        <input id="gh-token" type="password" placeholder="github_pat_…">
+      </div>
+      <div style="font-size:0.7rem;color:var(--muted);line-height:1.8;margin-bottom:1rem">
+        トークンは <strong style="color:var(--accent)">このブラウザのローカルストレージにのみ</strong> 保存されます。<br>
+        GitHubには送信されません（GitHub API経由のみ使用）。<br>
+        Fine-grained Token → Contents: Read &amp; Write 権限が必要です。
+      </div>
+      <div style="display:flex;gap:0.5rem">
+        <button class="btn primary" onclick="saveGhSettings()">保存</button>
+        <button class="btn" onclick="testGhConnection()">接続テスト</button>
+      </div>
+      <div class="gh-status" id="ghStatus"></div>
+    </div>
+  </div>
 
   <!-- Main -->
   <div class="main-wrapper">
@@ -383,6 +486,7 @@
       </div>
       <div class="edit-header-actions">
         <button class="btn primary" onclick="saveChar()">保存</button>
+        <button class="btn-push" id="btnPush" onclick="pushToGitHub()" title="GitHubに反映">↑ GitHubに反映</button>
       </div>
     </div>
 
@@ -404,7 +508,146 @@ let characters = [];
 let currentId = null;
 let sessions = [];
 
-// Dropbox URL変換（共有リンク → 直接表示URL）
+// ── GitHub設定 ──
+const GH_KEY = 'trpg_gh_settings';
+
+function loadGhSettings() {
+  try { return JSON.parse(localStorage.getItem(GH_KEY)) || {}; } catch { return {}; }
+}
+function saveGhSettingsToStorage(s) {
+  localStorage.setItem(GH_KEY, JSON.stringify(s));
+}
+
+function openGhSettings() {
+  const s = loadGhSettings();
+  document.getElementById('gh-repo').value   = s.repo   || '';
+  document.getElementById('gh-branch').value = s.branch || 'main';
+  document.getElementById('gh-path').value   = s.path   || 'characters.json';
+  document.getElementById('gh-token').value  = s.token  || '';
+  document.getElementById('ghStatus').className = 'gh-status';
+  document.getElementById('ghModalOverlay').classList.add('open');
+}
+function closeGhSettings() {
+  document.getElementById('ghModalOverlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeGhSettings();
+});
+
+function saveGhSettings() {
+  const s = {
+    repo:   document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main',
+    path:   document.getElementById('gh-path').value.trim() || 'characters.json',
+    token:  document.getElementById('gh-token').value.trim(),
+  };
+  saveGhSettingsToStorage(s);
+  closeGhSettings();
+  updateGhNotice();
+  showToast('GitHub設定を保存しました ✓');
+}
+
+async function testGhConnection() {
+  const s = loadGhSettings();
+  const statusEl = document.getElementById('ghStatus');
+  if (!s.repo || !s.token) {
+    statusEl.className = 'gh-status err';
+    statusEl.textContent = 'リポジトリとトークンを入力してください';
+    return;
+  }
+  statusEl.className = 'gh-status';
+  statusEl.textContent = '接続中…';
+  statusEl.style.display = 'block';
+  try {
+    const res = await fetch(`https://api.github.com/repos/${s.repo}`, {
+      headers: { Authorization: `Bearer ${s.token}`, 'X-GitHub-Api-Version': '2022-11-28' }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      statusEl.className = 'gh-status ok';
+      statusEl.textContent = `✓ 接続成功：${data.full_name}`;
+    } else {
+      const err = await res.json();
+      statusEl.className = 'gh-status err';
+      statusEl.textContent = `✗ エラー ${res.status}: ${err.message}`;
+    }
+  } catch (e) {
+    statusEl.className = 'gh-status err';
+    statusEl.textContent = '✗ 通信エラー: ' + e.message;
+  }
+}
+
+function updateGhNotice() {
+  const s = loadGhSettings();
+  const el = document.getElementById('ghNoticeText');
+  if (!el) return;
+  if (s.repo && s.token) {
+    el.innerHTML = `✓ 接続先: <strong style="color:var(--accent)">${s.repo}</strong> / ${s.path}`;
+  } else {
+    el.textContent = '⚙ まず「GitHub設定」でリポジトリとトークンを設定してください。';
+  }
+}
+
+// ── GitHub API: characters.json を push ──
+async function pushToGitHub() {
+  const s = loadGhSettings();
+  if (!s.repo || !s.token) {
+    openGhSettings();
+    return;
+  }
+
+  const btn = document.getElementById('btnPush');
+  if (btn) { btn.disabled = true; btn.textContent = '反映中…'; }
+
+  try {
+    const json = JSON.stringify(characters, null, 2);
+    const base64 = btoa(unescape(encodeURIComponent(json)));
+    const apiUrl = `https://api.github.com/repos/${s.repo}/contents/${s.path}`;
+    const headers = {
+      'Authorization': `Bearer ${s.token}`,
+      'Content-Type': 'application/json',
+      'X-GitHub-Api-Version': '2022-11-28',
+    };
+
+    // 現在のSHAを取得（更新に必要）
+    let sha = '';
+    const getRes = await fetch(apiUrl + `?ref=${s.branch}`, { headers });
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha = data.sha;
+    } else if (getRes.status !== 404) {
+      const err = await getRes.json();
+      throw new Error(`取得エラー ${getRes.status}: ${err.message}`);
+    }
+
+    // PUT でファイルを更新 or 新規作成
+    const body = {
+      message: `Update characters.json [admin]`,
+      content: base64,
+      branch:  s.branch,
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(body),
+    });
+
+    if (putRes.ok) {
+      showToast('GitHubに反映しました ✓ (1〜2分で反映)');
+    } else {
+      const err = await putRes.json();
+      throw new Error(`更新エラー ${putRes.status}: ${err.message}`);
+    }
+  } catch (e) {
+    showToast('エラー: ' + e.message, true);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↑ GitHubに反映'; }
+  }
+}
+
+// ── Dropbox URL変換 ──
 function fixDropboxUrl(url) {
   if (!url) return url;
   if (url.includes('dropbox.com')) {
@@ -422,6 +665,7 @@ async function init() {
     characters = await res.json();
   } catch { characters = []; }
   renderSidebar();
+  updateGhNotice();
 }
 
 function renderSidebar() {
@@ -435,7 +679,7 @@ function renderSidebar() {
       <div class="char-avatar">
         ${c.image ? `<img src="${fixDropboxUrl(c.image)}" alt="">` : (c.name.charAt(0) || '?')}
       </div>
-      <span class="char-item-name">${c.name}</span>
+      <span class="char-item-name">${c.name || '（名前なし）'}</span>
       <button class="char-delete-btn" onclick="event.stopPropagation();deleteChar('${c.id}')" title="削除">✕</button>
     </div>
   `).join('');
@@ -478,21 +722,19 @@ function deleteChar(id) {
 function renderForm(c) {
   sessions = [...(c.sessions || [])];
 
-  // ヘッダー更新
   const header = document.getElementById('editHeader');
   header.style.display = 'flex';
-  document.getElementById('editHeaderName').textContent = c.name;
+  document.getElementById('editHeaderName').textContent = c.name || '（名前なし）';
   document.getElementById('editHeaderId').textContent = 'ID: ' + c.id;
 
   document.getElementById('mainArea').innerHTML = `
     <div class="form-grid">
 
-      <!-- 基本情報 -->
       <div class="section-divider">基本情報</div>
 
       <div class="form-group">
         <label>PC名</label>
-        <input id="f-name" value="${esc(c.name)}" placeholder="PC名を入力" oninput="document.getElementById('editHeaderName').textContent=this.value||'—'">
+        <input id="f-name" value="${esc(c.name)}" placeholder="PC名を入力" oninput="document.getElementById('editHeaderName').textContent=this.value||'（名前なし）'">
       </div>
       <div class="form-group">
         <label>ふりがな</label>
@@ -519,7 +761,6 @@ function renderForm(c) {
         <input type="color" id="f-color" value="${c.color || '#7c9bb5'}">
       </div>
 
-      <!-- 立ち絵 -->
       <div class="section-divider">立ち絵</div>
       <div class="portrait-section">
         <div class="portrait-preview" id="portraitPreview">
@@ -545,7 +786,6 @@ function renderForm(c) {
         </div>
       </div>
 
-      <!-- プロフィール -->
       <div class="section-divider">プロフィール</div>
       <div class="form-group full">
         <label>自己紹介・背景</label>
@@ -556,7 +796,6 @@ function renderForm(c) {
         <input id="f-quote" value="${esc(c.quote)}">
       </div>
 
-      <!-- ステータス（六版） -->
       <div class="section-divider">ステータス（六版）</div>
 
       <div class="stats-group-label" style="grid-column:1/-1;font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;margin-bottom:-0.25rem">基本能力値</div>
@@ -587,7 +826,6 @@ function renderForm(c) {
         </div>
       </div>
 
-      <!-- シナリオ -->
       <div class="section-divider">参加シナリオ</div>
       <div class="form-group full">
         <div class="tags-input-wrap">
@@ -599,20 +837,18 @@ function renderForm(c) {
         </div>
       </div>
 
-      <!-- エクスポート -->
-      <div class="section-divider">JSON エクスポート / GitHub反映</div>
+      <div class="section-divider">GitHubに反映</div>
       <div class="form-group full">
-        <div class="notice">
-          <strong>GitHub Pagesでの更新方法：</strong><br>
-          ① 「保存」後に「JSONをコピー」ボタンを押す<br>
-          ② GitHubリポジトリの <code>characters.json</code> の内容を置き換えて保存<br>
-          ③ GitHub Pagesが自動再デプロイ（通常1〜2分）
+        <div class="notice" id="ghNotice">
+          <span id="ghNoticeText">⚙ まず「GitHub設定」でリポジトリとトークンを設定してください。</span>
         </div>
-        <button class="btn primary" style="margin-top:0.75rem" onclick="exportJSON()">📋 characters.json をコピー</button>
+        <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
+          <button class="btn-push" onclick="saveAndPush()">保存 → GitHubに反映</button>
+          <button class="btn" onclick="exportJSON()">📋 JSONをコピー（手動用）</button>
+        </div>
         <textarea class="json-area" id="jsonArea" readonly placeholder="「保存」後にJSONが表示されます"></textarea>
       </div>
 
-      <!-- 削除ゾーン（最下部） -->
       <div class="delete-zone">
         <div class="delete-zone-label">DANGER ZONE</div>
         <button class="btn danger" onclick="deleteChar('${c.id}')">この探索者を削除する</button>
@@ -622,6 +858,7 @@ function renderForm(c) {
   `;
 
   renderTags('session');
+  updateGhNotice();
 }
 
 function esc(s) {
@@ -629,10 +866,9 @@ function esc(s) {
 }
 
 function renderTags(type) {
-  const arr = sessions;
   const el = document.getElementById('sessionsTags');
   if (!el) return;
-  el.innerHTML = arr.map((t, i) => `
+  el.innerHTML = sessions.map((t, i) => `
     <span class="tag-chip">${t}
       <button onclick="removeTag(${i})">✕</button>
     </span>
@@ -662,12 +898,11 @@ function previewImage(url) {
     : `<div class="portrait-placeholder-text">画像なし</div>`;
 }
 
-function saveChar() {
+function collectFormData() {
   const idx = characters.findIndex(c => c.id === currentId);
-  if (idx === -1) return;
-
+  if (idx === -1) return false;
   const c = characters[idx];
-  c.name       = document.getElementById('f-name').value.trim() || c.name;
+  c.name       = document.getElementById('f-name').value.trim();
   c.furigana   = document.getElementById('f-furigana').value.trim();
   c.age        = document.getElementById('f-age').value.trim();
   c.occupation = document.getElementById('f-occupation').value.trim();
@@ -677,7 +912,6 @@ function saveChar() {
   c.profile    = document.getElementById('f-profile').value.trim();
   c.quote      = document.getElementById('f-quote').value.trim();
   c.sessions   = [...sessions];
-
   c.stats = {};
   ['STR','CON','POW','DEX','APP','SIZ','INT','EDU','HP','MP','SAN','アイデア','幸運','知識'].forEach(stat => {
     const el = document.getElementById('stat-' + stat);
@@ -685,16 +919,24 @@ function saveChar() {
   });
   const dbEl = document.getElementById('stat-DB');
   if (dbEl) c.stats['DB'] = dbEl.value.trim();
-
   characters[idx] = c;
-  renderSidebar();
+  return c;
+}
 
+function saveChar() {
+  const c = collectFormData();
+  if (!c) return;
+  renderSidebar();
   const json = JSON.stringify(characters, null, 2);
   const jsonArea = document.getElementById('jsonArea');
   if (jsonArea) jsonArea.value = json;
-
-  document.getElementById('editHeaderName').textContent = c.name;
+  document.getElementById('editHeaderName').textContent = c.name || '（名前なし）';
   showToast('保存しました ✓');
+}
+
+async function saveAndPush() {
+  saveChar();
+  await pushToGitHub();
 }
 
 function exportJSON() {
@@ -708,11 +950,12 @@ function exportJSON() {
   });
 }
 
-function showToast(msg) {
+function showToast(msg, isError = false) {
   const t = document.getElementById('toast');
   t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 init();
@@ -736,21 +979,13 @@ function handleImportFile(input) {
     }
   };
   reader.readAsText(file);
-  input.value = ''; // 同じファイルを再度選べるようにリセット
+  input.value = '';
 }
 
-// いあきゃら等のキャラシJSON → characters.json形式に変換
 function convertCharaSheet(raw) {
   const inp = raw.inputs || {};
   const id = Date.now().toString();
-
-  // ステータス変換
-  // 六版: STR/CON/POW/DEX/APP/SIZ/INT/EDU は3d6 or 2d6+6ベース → 実数値
-  // HP = (CON + SIZ) / 2、MP = POW、SAN = POW×5 が基本だが
-  // いあきゃら形式では数値がそのまま入る
   const n = (v) => { const x = parseInt(v); return isNaN(x) ? '' : x; };
-
-  // SAN現在値はsan_now、最大はPOW×5
   const sanNow = n(inp.san_now);
   const pow    = n(inp.pow);
   const hp     = inp.hp_t ? n(inp.hp_t) : (inp.con && inp.siz ? Math.floor((n(inp.con) + n(inp.siz)) / 2) : '');
@@ -758,72 +993,44 @@ function convertCharaSheet(raw) {
   const idea   = inp.idea_t ? n(inp.idea_t) : (n(inp.int_v) !== '' ? n(inp.int_v) * 5 : '');
   const luck   = inp.luck_t ? n(inp.luck_t) : (pow !== '' ? pow * 5 : '');
   const know   = inp.know_t ? n(inp.know_t) : (n(inp.edu) !== '' ? n(inp.edu) * 5 : '');
-
-  // ダメージボーナス計算（六版標準）
   function calcDB(str, siz) {
-    const s = parseInt(str) || 0;
-    const sz = parseInt(siz) || 0;
-    const total = s + sz;
-    if (total <= 12)  return '-1d6';
-    if (total <= 16)  return '-1d4';
-    if (total <= 24)  return '0';
-    if (total <= 32)  return '+1d4';
-    if (total <= 40)  return '+1d6';
+    const total = (parseInt(str)||0) + (parseInt(siz)||0);
+    if (total <= 12) return '-1d6';
+    if (total <= 16) return '-1d4';
+    if (total <= 24) return '0';
+    if (total <= 32) return '+1d4';
+    if (total <= 40) return '+1d6';
     return '+2d6';
   }
-  const db = calcDB(inp.str, inp.siz);
-
-  // シナリオ一覧：scenarios は改行区切りの文字列 or 配列
   let sessions = [];
   if (Array.isArray(raw.scenarios)) {
     sessions = raw.scenarios.flatMap(s => s.split('\n').map(l => l.trim()).filter(Boolean));
   } else if (typeof raw.scenarios === 'string') {
     sessions = raw.scenarios.split('\n').map(l => l.trim()).filter(Boolean);
   }
-
-  // プロフィール：memosの最初のbodyを使用
   const profileBody = (raw.memos || []).map(m => m.body || '').join('\n\n').trim();
-
-  // ステータスマッピング
   const status = inp.pc_status === 'dead' ? '死亡'
                : inp.pc_status === 'missing' ? '不明'
-               : inp.pc_status === 'retire' ? '引退'
-               : '生存';
-
-  // カラー（txtcolorがあればそのまま使用）
-  const color = inp.txtcolor || '#7c9bb5';
-
+               : inp.pc_status === 'retire' ? '引退' : '生存';
   return {
     id,
-    name:       inp.pcname  || '',
-    furigana:   inp.furigana || '',
-    age:        inp.age      || '',
-    occupation: inp.job      || '',
-    image:      '',
-    color,
+    name: inp.pcname || '', furigana: inp.furigana || '',
+    age: inp.age || '', occupation: inp.job || '',
+    image: '', color: inp.txtcolor || '#7c9bb5',
     stats: {
-      STR:    n(inp.str),
-      CON:    n(inp.con),
-      POW:    pow,
-      DEX:    n(inp.dex),
-      APP:    n(inp.app),
-      SIZ:    n(inp.siz),
-      INT:    n(inp.int_v),
-      EDU:    n(inp.edu),
-      HP:     hp,
-      MP:     mp,
-      SAN:    sanNow !== '' ? sanNow : (pow !== '' ? pow * 5 : ''),
-      アイデア: idea,
-      幸運:   luck,
-      知識:   know,
-      DB:     db,
+      STR: n(inp.str), CON: n(inp.con), POW: pow,
+      DEX: n(inp.dex), APP: n(inp.app), SIZ: n(inp.siz),
+      INT: n(inp.int_v), EDU: n(inp.edu),
+      HP: hp, MP: mp,
+      SAN: sanNow !== '' ? sanNow : (pow !== '' ? pow * 5 : ''),
+      アイデア: idea, 幸運: luck, 知識: know,
+      DB: calcDB(inp.str, inp.siz),
     },
-    profile:  profileBody,
-    quote:    '',
-    sessions,
-    status,
+    profile: profileBody, quote: '',
+    sessions, status,
   };
 }
 </script>
+
 </body>
 </html>
