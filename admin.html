@@ -231,7 +231,7 @@
   /* ドラッグクロップ */
   .crop-wrap {
     position: relative;
-    width: 120px; height: 160px;
+    width: 200px; height: 260px;
     background: var(--surface2);
     border: 1px solid var(--border);
     overflow: hidden;
@@ -239,30 +239,33 @@
     cursor: grab;
     user-select: none;
     touch-action: none;
+    -webkit-user-select: none;
   }
-  .crop-wrap:active { cursor: grabbing; }
+  .crop-wrap.dragging { cursor: grabbing; }
   .crop-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover;
+    position: absolute;
+    /* サイズ・位置はJSのtranslate方式で制御 */
     pointer-events: none;
     user-select: none;
-    draggable: false;
+    will-change: transform;
+    /* object-fitは使わずtransformで動かす */
   }
   .crop-hint {
     position: absolute;
     inset: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     pointer-events: none;
+    padding-bottom: 0.5rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%);
     opacity: 0;
     transition: opacity 0.2s;
-    background: rgba(0,0,0,0.35);
   }
   .crop-wrap:hover .crop-hint { opacity: 1; }
   .crop-hint-text {
     font-size: 0.6rem;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.85);
     letter-spacing: 0.08em;
     text-align: center;
     line-height: 1.8;
@@ -271,7 +274,6 @@
     width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
   }
-  .pos-label { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 0.3rem; }
 
   /* Stats */
   .stats-grid {
@@ -736,6 +738,7 @@ function createNew() {
   const id = Date.now().toString();
   const c = {
     id, name: '', furigana: '', age: '', occupation: '',
+    birthday: '',
     category: '',
     image: '', imagePos: '50% 20%', color: '#7c9bb5',
     stats: { STR:'', CON:'', POW:'', DEX:'', APP:'', SIZ:'', INT:'', EDU:'', HP:'', MP:'', SAN:'', アイデア:'', 幸運:'', 知識:'', DB:'' },
@@ -788,6 +791,10 @@ function renderForm(c) {
         <input id="f-age" value="${esc(c.age)}">
       </div>
       <div class="form-group">
+        <label>誕生日</label>
+        <input id="f-birthday" value="${esc(c.birthday||'')}" placeholder="例: 3月15日">
+      </div>
+      <div class="form-group">
         <label>職業</label>
         <input id="f-occupation" value="${esc(c.occupation)}">
       </div>
@@ -826,11 +833,10 @@ function renderForm(c) {
           <div class="pos-label">プレビュー（ドラッグで位置調整）</div>
           <div class="crop-wrap" id="cropWrap">
             ${c.image
-              ? `<img id="cropImg" src="${fixDropboxUrl(esc(c.image))}" alt="" draggable="false" style="object-position:${c.imagePos||'50% 20%'}">
-                 <div class="crop-hint"><div class="crop-hint-text">ドラッグで<br>位置を調整</div></div>`
+              ? `<img id="cropImg" src="${fixDropboxUrl(esc(c.image))}" alt="" draggable="false" style="position:absolute;left:0;top:0;cursor:inherit">
+                 <div class="crop-hint"><div class="crop-hint-text">ドラッグで位置を調整</div></div>`
               : `<div class="crop-placeholder"><div class="portrait-placeholder-text">画像なし</div></div>`}
           </div>
-          <div style="font-size:0.6rem;color:var(--muted);margin-top:0.4rem;text-align:center">ドラッグで位置調整</div>
         </div>
         <div class="portrait-inputs">
           <div class="form-group">
@@ -966,46 +972,81 @@ function removeTag(i) {
   renderTags('session');
 }
 
-// ── ドラッグクロップ（完全書き直し）──
-// グローバル状態で管理、IDで毎回要素を取得
-let _crop = { dragging:false, lastX:0, lastY:0, ox:50, oy:20 };
+// ── ドラッグクロップ（transform方式・完全版）──
+// object-positionではなく画像をabsoluteで動かし、保存時にobject-position%に変換
+const _crop = {
+  dragging: false,
+  startX: 0, startY: 0,
+  imgX: 0, imgY: 0,      // 現在の画像left/top (px)
+  imgW: 0, imgH: 0,      // 表示サイズ (px)
+  wrapW: 200, wrapH: 260
+};
 
-window.addEventListener('mousemove', e => {
+// グローバルイベント（一度だけ登録）
+document.addEventListener('mousemove', e => {
   if (!_crop.dragging) return;
-  _doCropMove(e.clientX, e.clientY);
-});
-window.addEventListener('mouseup', () => {
+  _cropDragMove(e.clientX, e.clientY);
+}, { passive: true });
+
+document.addEventListener('mouseup', () => {
   if (!_crop.dragging) return;
   _crop.dragging = false;
   const w = document.getElementById('cropWrap');
-  if (w) w.style.cursor = 'grab';
-});
-window.addEventListener('touchmove', e => {
+  if (w) w.classList.remove('dragging');
+  _cropSavePos();
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
   if (!_crop.dragging) return;
   e.preventDefault();
-  _doCropMove(e.touches[0].clientX, e.touches[0].clientY);
+  _cropDragMove(e.touches[0].clientX, e.touches[0].clientY);
 }, { passive: false });
-window.addEventListener('touchend', () => { _crop.dragging = false; });
 
-function _doCropMove(ex, ey) {
-  const wrap = document.getElementById('cropWrap');
-  const img  = document.getElementById('cropImg');
-  if (!wrap || !img) { _crop.dragging = false; return; }
-  const dx = ex - _crop.lastX;
-  const dy = ey - _crop.lastY;
-  _crop.lastX = ex;
-  _crop.lastY = ey;
-  const W = wrap.offsetWidth  || 120;
-  const H = wrap.offsetHeight || 160;
-  // ドラッグ方向と逆に動かす（画像を引っ張るイメージ）
-  _crop.ox -= (dx / W) * 100 * 0.6;
-  _crop.oy -= (dy / H) * 100 * 0.6;
-  _crop.ox = Math.max(0, Math.min(100, _crop.ox));
-  _crop.oy = Math.max(0, Math.min(100, _crop.oy));
-  img.style.objectPosition = `${_crop.ox.toFixed(1)}% ${_crop.oy.toFixed(1)}%`;
-  // characters[]に即保存
+document.addEventListener('touchend', () => {
+  if (!_crop.dragging) return;
+  _crop.dragging = false;
+  _cropSavePos();
+}, { passive: true });
+
+function _cropClamp() {
+  // 画像がwrapからはみ出さないようにクランプ
+  const maxX = 0;
+  const minX = Math.min(0, _crop.wrapW - _crop.imgW);
+  const maxY = 0;
+  const minY = Math.min(0, _crop.wrapH - _crop.imgH);
+  _crop.imgX = Math.max(minX, Math.min(maxX, _crop.imgX));
+  _crop.imgY = Math.max(minY, Math.min(maxY, _crop.imgY));
+}
+
+function _cropApplyTransform() {
+  const img = document.getElementById('cropImg');
+  if (!img) return;
+  img.style.left = _crop.imgX + 'px';
+  img.style.top  = _crop.imgY + 'px';
+}
+
+function _cropDragMove(ex, ey) {
+  const dx = ex - _crop.startX;
+  const dy = ey - _crop.startY;
+  _crop.startX = ex;
+  _crop.startY = ey;
+  _crop.imgX += dx;
+  _crop.imgY += dy;
+  _cropClamp();
+  _cropApplyTransform();
+}
+
+function _cropSavePos() {
+  // left/top px → object-position % に変換して保存
+  const ox = _crop.imgW > _crop.wrapW
+    ? ((-_crop.imgX) / (_crop.imgW - _crop.wrapW)) * 100
+    : 50;
+  const oy = _crop.imgH > _crop.wrapH
+    ? ((-_crop.imgY) / (_crop.imgH - _crop.wrapH)) * 100
+    : 50;
+  const pos = `${Math.round(ox)}% ${Math.round(oy)}%`;
   const idx = characters.findIndex(ch => ch.id === currentId);
-  if (idx !== -1) characters[idx].imagePos = `${_crop.ox.toFixed(1)}% ${_crop.oy.toFixed(1)}%`;
+  if (idx !== -1) characters[idx].imagePos = pos;
 }
 
 function initCrop(c) {
@@ -1013,28 +1054,56 @@ function initCrop(c) {
   const img  = document.getElementById('cropImg');
   if (!wrap || !img) return;
 
-  // 初期位置を復元
-  _crop.ox = 50; _crop.oy = 20;
-  if (c.imagePos && c.imagePos.includes('%')) {
-    const parts = c.imagePos.trim().split(/\s+/);
-    _crop.ox = parseFloat(parts[0]) || 50;
-    _crop.oy = parseFloat(parts[1]) || 20;
-  }
-  img.style.objectPosition = `${_crop.ox.toFixed(1)}% ${_crop.oy.toFixed(1)}%`;
+  _crop.wrapW = wrap.offsetWidth  || 200;
+  _crop.wrapH = wrap.offsetHeight || 260;
 
-  // onmousedown/ontouchstart を毎回上書き（古いハンドラを自動で置き換え）
+  // 画像サイズを設定：短辺をwrapに合わせてアスペクト比を維持
+  function setupImage() {
+    const natW = img.naturalWidth  || 200;
+    const natH = img.naturalHeight || 260;
+    const aspect = natW / natH;
+    // 高さ基準でwrapより大きく表示（最低1.3倍）
+    let h = Math.max(_crop.wrapH, _crop.wrapH * 1.3);
+    let w = h * aspect;
+    if (w < _crop.wrapW) { w = _crop.wrapW * 1.3; h = w / aspect; }
+    _crop.imgW = w;
+    _crop.imgH = h;
+    img.style.width  = w + 'px';
+    img.style.height = h + 'px';
+
+    // 保存済みimagePos から初期位置を復元
+    let ox = 50, oy = 30;
+    if (c.imagePos && c.imagePos.includes('%')) {
+      const parts = c.imagePos.trim().split(/\s+/);
+      ox = parseFloat(parts[0]) || 50;
+      oy = parseFloat(parts[1]) || 30;
+    }
+    _crop.imgX = -((ox / 100) * (w - _crop.wrapW));
+    _crop.imgY = -((oy / 100) * (h - _crop.wrapH));
+    _cropClamp();
+    _cropApplyTransform();
+  }
+
+  if (img.complete && img.naturalWidth) {
+    setupImage();
+  } else {
+    img.onload = setupImage;
+  }
+
+  // mousedown/touchstart をwrapに直接代入（毎回上書きで重複防止）
   wrap.onmousedown = e => {
     e.preventDefault();
     _crop.dragging = true;
-    _crop.lastX = e.clientX;
-    _crop.lastY = e.clientY;
-    wrap.style.cursor = 'grabbing';
+    _crop.startX = e.clientX;
+    _crop.startY = e.clientY;
+    wrap.classList.add('dragging');
   };
   wrap.ontouchstart = e => {
-    e.preventDefault();
+    // スクロール干渉防止
+    e.stopPropagation();
     _crop.dragging = true;
-    _crop.lastX = e.touches[0].clientX;
-    _crop.lastY = e.touches[0].clientY;
+    _crop.startX = e.touches[0].clientX;
+    _crop.startY = e.touches[0].clientY;
   };
 }
 
@@ -1043,15 +1112,15 @@ function previewImage(url) {
   if (!wrap) return;
   const fixed = fixDropboxUrl(url);
   const idx = characters.findIndex(c => c.id === currentId);
-  const pos = (idx !== -1 && characters[idx].imagePos) ? characters[idx].imagePos : '50% 20%';
+  const c = idx !== -1 ? characters[idx] : {};
   if (url) {
-    wrap.innerHTML = `<img id="cropImg" src="${fixed}" alt="" draggable="false" style="object-position:${pos}">
-      <div class="crop-hint"><div class="crop-hint-text">ドラッグで<br>位置を調整</div></div>`;
+    wrap.innerHTML = `<img id="cropImg" src="${fixed}" alt="" draggable="false"
+        style="position:absolute;left:0;top:0;cursor:inherit">
+      <div class="crop-hint"><div class="crop-hint-text">ドラッグで位置を調整</div></div>`;
+    setTimeout(() => initCrop(c), 30);
   } else {
     wrap.innerHTML = `<div class="crop-placeholder"><div class="portrait-placeholder-text">画像なし</div></div>`;
   }
-  const c = idx !== -1 ? characters[idx] : {};
-  if (url) initCrop(c);
 }
 
 function setImagePos() {} // 互換用
@@ -1063,6 +1132,7 @@ function collectFormData() {
   c.name       = document.getElementById('f-name').value.trim();
   c.furigana   = document.getElementById('f-furigana').value.trim();
   c.age        = document.getElementById('f-age').value.trim();
+  c.birthday   = document.getElementById('f-birthday')?.value.trim() || '';
   c.occupation = document.getElementById('f-occupation').value.trim();
   // カテゴリー：セレクトが__custom__ならテキスト入力値、それ以外はセレクト値
   const catSel = document.getElementById('f-category-select');

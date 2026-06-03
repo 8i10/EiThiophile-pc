@@ -245,7 +245,7 @@ function openModal(id) {
   document.getElementById('modalMeta').innerHTML = `
     ${c.age?`<span>年齢<strong>${c.age}歳</strong></span>`:''}
     ${c.occupation?`<span>職業<strong>${c.occupation}</strong></span>`:''}
-    ${c.category?`<span>カテゴリー<strong>${c.category}</strong></span>`:''}
+    <span>誕生日<strong>${c.birthday||'未設定'}</strong></span>
     ${c.status?`<span>状態<strong>${c.status}</strong></span>`:''}`;
 
   const pos = c.imagePos || '50% 20%';
