@@ -499,7 +499,7 @@ function renderGrid() {
     <div class="card" style="animation-delay:${i * 0.07}s" onclick="openModal('${c.id}')">
       <div class="card-portrait" style="background: linear-gradient(160deg, ${c.color || '#7c9bb5'}22, #1a1a1f)">
         ${c.image
-          ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy">`
+          ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy" style="object-position:${c.imagePos||'50% 20%'}">`
           : `<div class="card-portrait-placeholder"><span class="placeholder-monogram">${c.name ? c.name.charAt(0) : '?'}</span></div>`}
         ${c.status ? `<span class="card-status-badge status-${c.status}">${c.status}</span>` : ''}
       </div>
@@ -536,7 +536,7 @@ function openModal(id) {
 
   const imgUrl = fixDropboxUrl(c.image);
   document.getElementById('modalPortrait').innerHTML = c.image
-    ? `<img src="${imgUrl}" alt="${c.name}">`
+    ? `<img src="${imgUrl}" alt="${c.name}" style="object-position:${c.imagePos||'50% 20%'}">`
     : `<div class="modal-portrait-placeholder"><span class="placeholder-monogram" style="font-size:5rem;opacity:0.15">${c.name ? c.name.charAt(0) : '?'}</span></div>`;
 
   // ステータス
