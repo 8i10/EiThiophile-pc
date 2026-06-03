@@ -713,6 +713,8 @@ function deleteChar(id) {
       <div class="empty-state"><div class="empty-icon">✦</div><div>探索者を選択してください</div></div>`;
   }
   renderSidebar();
+  // 削除もGitHubに即反映
+  pushToGitHub();
 }
 
 function renderForm(c) {
@@ -1001,7 +1003,12 @@ function convertCharaSheet(raw) {
   } else if (typeof raw.scenarios === 'string') {
     sessions = raw.scenarios.split('\n').map(l => l.trim()).filter(Boolean);
   }
-  const profileBody = (raw.memos || []).map(m => m.body || '').join('\n\n').trim();
+  // プロフィール：memosの最初のbodyを使用（改行保持）
+  const profileBody = (raw.memos || [])
+    .map(m => (m.body || '').trimEnd())
+    .filter(Boolean)
+    .join('\n\n')
+    .trim();
   const status = inp.pc_status === 'dead' ? '死亡'
                : inp.pc_status === 'missing' ? '不明'
                : inp.pc_status === 'retire' ? '引退' : '生存';
