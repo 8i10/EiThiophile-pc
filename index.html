@@ -7,110 +7,106 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+JP:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0e0e10;
-    --surface: #16161a;
-    --border: #2a2a30;
-    --text: #e8e6e0;
-    --muted: #8a887e;
-    --accent: #c9a96e;
-    --accent-dim: rgba(201,169,110,0.15);
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Noto Serif JP', serif; min-height: 100vh; overflow-x: hidden; }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,169,110,0.06) 0%, transparent 70%);
-    pointer-events: none; z-index: 0;
-  }
+  :root { --bg:#0e0e10;--surface:#16161a;--border:#2a2a30;--text:#e8e6e0;--muted:#8a887e;--accent:#c9a96e;--accent-dim:rgba(201,169,110,0.15); }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Noto Serif JP',serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,169,110,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;}
 
-  header { position: relative; z-index: 1; padding: 4rem 2rem 2rem; text-align: center; border-bottom: 1px solid var(--border); }
-  h1 { font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; letter-spacing: 0.5em; color: var(--text); opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s; }
-  .header-line { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-top: 1.5rem; opacity: 0; animation: fadeUp 0.8s ease forwards 0.35s; }
-  .header-line::before, .header-line::after { content: ''; flex: 1; max-width: 120px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
-  .header-line::after { background: linear-gradient(90deg, var(--accent), transparent); }
-  .header-ornament { color: var(--accent); font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; }
+  header{position:relative;z-index:1;padding:4rem 2rem 2rem;text-align:center;border-bottom:1px solid var(--border);}
+  h1{font-size:clamp(1.2rem,3vw,2rem);font-weight:200;letter-spacing:0.5em;opacity:0;animation:fadeUp 0.8s ease forwards 0.2s;}
+  .header-line{display:flex;align-items:center;gap:1rem;justify-content:center;margin-top:1.5rem;opacity:0;animation:fadeUp 0.8s ease forwards 0.35s;}
+  .header-line::before,.header-line::after{content:'';flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--accent));}
+  .header-line::after{background:linear-gradient(90deg,var(--accent),transparent);}
+  .header-ornament{color:var(--accent);font-family:'Cormorant Garamond',serif;font-size:1.2rem;}
+
+  /* 検索 */
+  .search-wrap{position:relative;z-index:1;display:flex;justify-content:center;padding:1.5rem 2rem 0;opacity:0;animation:fadeUp 0.8s ease forwards 0.45s;}
+  .search-input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem 0.5rem 2.2rem;font-family:'Noto Serif JP',serif;font-size:0.8rem;width:100%;max-width:400px;outline:none;transition:border-color 0.2s;}
+  .search-input:focus{border-color:var(--accent);}
+  .search-icon{position:absolute;left:calc(50% - 188px);top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.8rem;pointer-events:none;}
 
   /* フィルター */
-  .controls { position: relative; z-index: 1; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; padding: 2rem 2rem 1rem; opacity: 0; animation: fadeUp 0.8s ease forwards 0.5s; }
-  .filter-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.35rem 1rem; font-family: 'Noto Serif JP', serif; font-size: 0.72rem; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; }
-  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-  .filter-group { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
-  .filter-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
+  .controls{position:relative;z-index:1;display:flex;flex-direction:column;gap:0.5rem;align-items:center;padding:1rem 2rem;opacity:0;animation:fadeUp 0.8s ease forwards 0.5s;}
+  .filter-group{display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;}
+  .filter-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.85rem;font-family:'Noto Serif JP',serif;font-size:0.7rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
+  .filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
 
-  /* グリッド：カード幅を少し狭く */
-  .grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  /* グリッド */
+  .grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;padding:1.5rem 2rem 2rem;max-width:1200px;margin:0 auto;}
 
   /* カード */
-  .card { background: var(--surface); border: 1px solid var(--border); cursor: pointer; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; opacity: 0; animation: fadeUp 0.6s ease forwards; position: relative; overflow: hidden; }
-  .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-dim); }
-  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.25s; }
-  .card:hover::before { opacity: 1; }
-
-  .card-portrait { width: 100%; height: 200px; background: #1a1a1f; overflow: hidden; position: relative; }
-  .card-portrait img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-  .card:hover .card-portrait img { transform: scale(1.06); }
-
-  .card-portrait-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-  .placeholder-monogram { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-weight: 300; opacity: 0.2; }
-
-  .card-status-badge { position: absolute; top: 10px; right: 10px; padding: 0.2rem 0.6rem; font-size: 0.65rem; letter-spacing: 0.1em; font-family: 'Cormorant Garamond', serif; }
-  .status-生存 { background: rgba(100,160,100,0.2); color: #8cc48c; border: 1px solid rgba(100,160,100,0.4); }
-  .status-死亡 { background: rgba(160,80,80,0.2);  color: #c48c8c; border: 1px solid rgba(160,80,80,0.4); }
-  .status-不明 { background: rgba(160,160,100,0.2);color: #c4c48c; border: 1px solid rgba(160,160,100,0.4); }
-  .status-引退 { background: rgba(100,100,160,0.2); color: #8c8cc4; border: 1px solid rgba(100,100,160,0.4); }
-
-  .card-body { padding: 1rem 1.25rem 1.25rem; }
-  .card-furigana { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.18em; margin-bottom: 0.12rem; }
-  .card-name { font-size: 1.3rem; font-weight: 300; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
-  .card-meta { display: flex; gap: 0.75rem; font-size: 0.7rem; color: var(--muted); padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); margin-bottom: 0.6rem; }
-  .card-quote { font-size: 0.72rem; color: var(--muted); font-style: italic; line-height: 1.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card{background:var(--surface);border:1px solid var(--border);cursor:pointer;transition:transform 0.25s ease,border-color 0.25s ease,box-shadow 0.25s ease;opacity:0;animation:fadeUp 0.6s ease forwards;position:relative;overflow:hidden;}
+  .card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 12px 40px rgba(0,0,0,0.4),0 0 0 1px var(--accent-dim);}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity 0.25s;}
+  .card:hover::before{opacity:1;}
+  .card-portrait{width:100%;height:200px;background:#1a1a1f;overflow:hidden;position:relative;}
+  .card-portrait img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;}
+  .card:hover .card-portrait img{transform:scale(1.06);}
+  .card-portrait-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+  .placeholder-monogram{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;opacity:0.2;}
+  .card-status-badge{position:absolute;top:10px;right:10px;padding:0.2rem 0.6rem;font-size:0.65rem;letter-spacing:0.1em;font-family:'Cormorant Garamond',serif;}
+  .status-生存{background:rgba(100,160,100,0.2);color:#8cc48c;border:1px solid rgba(100,160,100,0.4);}
+  .status-死亡{background:rgba(160,80,80,0.2);color:#c48c8c;border:1px solid rgba(160,80,80,0.4);}
+  .status-不明{background:rgba(160,160,100,0.2);color:#c4c48c;border:1px solid rgba(160,160,100,0.4);}
+  .status-引退{background:rgba(100,100,160,0.2);color:#8c8cc4;border:1px solid rgba(100,100,160,0.4);}
+  .card-body{padding:1rem 1.25rem 1.25rem;}
+  .card-furigana{font-size:0.6rem;color:var(--muted);letter-spacing:0.18em;margin-bottom:0.12rem;}
+  .card-name{font-size:1.3rem;font-weight:300;letter-spacing:0.1em;margin-bottom:0.6rem;}
+  .card-meta{display:flex;gap:0.75rem;font-size:0.7rem;color:var(--muted);padding-bottom:0.6rem;border-bottom:1px solid var(--border);margin-bottom:0.6rem;}
+  .card-quote{font-size:0.72rem;color:var(--muted);font-style:italic;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
   /* モーダル */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(4px); }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: var(--surface); border: 1px solid var(--border); max-width: 720px; width: 100%; max-height: 90vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.2s; position: relative; }
-  .modal-overlay.open .modal { transform: translateY(0); }
-  .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: 1px solid var(--border); color: var(--muted); width: 2rem; height: 2rem; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
-  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
-  .modal-top { display: grid; grid-template-columns: 240px 1fr; }
-  @media (max-width: 560px) { .modal-top { grid-template-columns: 1fr; } }
-  .modal-portrait { background: #1a1a1f; min-height: 300px; overflow: hidden; }
-  .modal-portrait img { width: 100%; height: 100%; object-fit: cover; }
-  .modal-portrait-placeholder { width: 100%; height: 100%; min-height: 300px; display: flex; align-items: center; justify-content: center; }
-  .modal-info { padding: 2rem; }
-  .modal-furigana { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 0.3rem; }
-  .modal-name { font-size: 1.8rem; font-weight: 200; letter-spacing: 0.12em; margin-bottom: 1rem; }
-  .modal-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; font-size: 0.75rem; color: var(--muted); padding: 0.75rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
-  .modal-meta-row span strong { color: var(--text); display: block; font-weight: 400; font-size: 0.85rem; }
-  .modal-body { padding: 0 2rem 2rem; }
-  .modal-section-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.8rem; color: var(--accent); letter-spacing: 0.2em; margin-bottom: 0.6rem; margin-top: 1.5rem; }
-  .modal-profile { font-size: 0.82rem; line-height: 2; color: var(--text); opacity: 0.9; white-space: pre-wrap; }
-  .modal-quote { border-left: 2px solid var(--accent); padding-left: 1rem; font-style: italic; font-size: 0.82rem; color: var(--muted); line-height: 1.8; margin-top: 1rem; }
-  .modal-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
-  .stat-item { background: var(--bg); border: 1px solid var(--border); padding: 0.5rem; text-align: center; }
-  .stat-label { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; }
-  .stat-val { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--accent); }
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity 0.2s;backdrop-filter:blur(4px);}
+  .modal-overlay.open{opacity:1;pointer-events:all;}
+  .modal{background:var(--surface);border:1px solid var(--border);max-width:720px;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(16px);transition:transform 0.2s;position:relative;}
+  .modal-overlay.open .modal{transform:translateY(0);}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:1px solid var(--border);color:var(--muted);width:2rem;height:2rem;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:10;}
+  .modal-close:hover{border-color:var(--accent);color:var(--accent);}
+  .modal-top{display:grid;grid-template-columns:240px 1fr;}
+  @media(max-width:560px){.modal-top{grid-template-columns:1fr;}}
+  .modal-portrait{background:#1a1a1f;min-height:300px;overflow:hidden;}
+  .modal-portrait img{width:100%;height:100%;object-fit:cover;}
+  .modal-portrait-placeholder{width:100%;height:100%;min-height:300px;display:flex;align-items:center;justify-content:center;}
+  .modal-info{padding:2rem;}
+  .modal-furigana{font-size:0.7rem;color:var(--muted);letter-spacing:0.2em;margin-bottom:0.3rem;}
+  .modal-name{font-size:1.8rem;font-weight:200;letter-spacing:0.12em;margin-bottom:1rem;}
+  .modal-meta-row{display:flex;gap:2rem;flex-wrap:wrap;font-size:0.75rem;color:var(--muted);padding:0.75rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:0;}
+  .modal-meta-row span strong{color:var(--text);display:block;font-weight:400;font-size:0.85rem;}
+  .modal-body{padding:0 2rem 2rem;}
+  .modal-section-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.8rem;color:var(--accent);letter-spacing:0.2em;margin-bottom:0.6rem;margin-top:1.5rem;}
+  .modal-profile{font-size:0.82rem;line-height:2;color:var(--text);opacity:0.9;white-space:pre-wrap;}
+  .modal-quote{border-left:2px solid var(--accent);padding-left:1rem;font-style:italic;font-size:0.82rem;color:var(--muted);line-height:1.8;margin-top:1rem;}
+
+  /* ステータス */
+  .modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem;}
+  .stat-item{background:var(--bg);border:1px solid var(--border);padding:0.5rem;text-align:center;}
+  .stat-label{font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;}
+  .stat-val{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--accent);}
+
+  /* 特徴表 */
+  .traits-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-top:0.5rem;}
+  .traits-table th{background:rgba(201,169,110,0.08);color:var(--accent);font-weight:400;letter-spacing:0.08em;padding:0.4rem 0.6rem;border:1px solid var(--border);font-size:0.7rem;}
+  .traits-table td{padding:0.4rem 0.6rem;border:1px solid var(--border);color:var(--text);line-height:1.6;vertical-align:top;}
+  .traits-table tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
 
   /* アコーディオン */
-  .accordion { border: 1px solid var(--border); margin-top: 0.5rem; }
-  .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.9rem; cursor: pointer; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; user-select: none; transition: background 0.15s, color 0.15s; }
-  .accordion-header:hover { background: rgba(255,255,255,0.03); color: var(--text); }
-  .accordion-title { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--accent); font-size: 0.8rem; letter-spacing: 0.15em; }
-  .accordion-count { font-size: 0.68rem; color: var(--muted); margin-left: 0.5rem; }
-  .accordion-arrow { font-size: 0.6rem; transition: transform 0.2s; color: var(--accent); }
-  .accordion.open .accordion-arrow { transform: rotate(180deg); }
-  .accordion-body { display: none; padding: 0.75rem 1rem 1rem; border-top: 1px solid var(--border); }
-  .accordion.open .accordion-body { display: block; }
-  .session-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
-  .session-list li { font-size: 0.78rem; color: var(--muted); padding-left: 1em; position: relative; line-height: 1.6; }
-  .session-list li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-size: 0.7rem; }
+  .accordion{border:1px solid var(--border);margin-top:1rem;}
+  .accordion-header{display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0.9rem;cursor:pointer;font-size:0.75rem;color:var(--muted);letter-spacing:0.08em;user-select:none;transition:background 0.15s,color 0.15s;}
+  .accordion-header:hover{background:rgba(255,255,255,0.03);color:var(--text);}
+  .accordion-title{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--accent);font-size:0.8rem;letter-spacing:0.15em;}
+  .accordion-count{font-size:0.68rem;color:var(--muted);margin-left:0.5rem;}
+  .accordion-arrow{font-size:0.6rem;transition:transform 0.2s;color:var(--accent);}
+  .accordion.open .accordion-arrow{transform:rotate(180deg);}
+  .accordion-body{display:none;padding:0.75rem 1rem 1rem;border-top:1px solid var(--border);}
+  .accordion.open .accordion-body{display:block;}
+  .session-list{list-style:none;display:flex;flex-direction:column;gap:0.4rem;}
+  .session-list li{font-size:0.78rem;color:var(--muted);padding-left:1em;position:relative;line-height:1.6;}
+  .session-list li::before{content:'—';position:absolute;left:0;color:var(--accent);font-size:0.7rem;}
 
-  footer { position: relative; z-index: 1; text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border); margin-top: 2rem; }
-  .footer-link { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.8rem; color: var(--muted); text-decoration: none; letter-spacing: 0.1em; border: 1px solid var(--border); padding: 0.4rem 1.2rem; transition: all 0.2s; }
-  .footer-link:hover { color: var(--accent); border-color: var(--accent); }
-
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  footer{position:relative;z-index:1;text-align:center;padding:3rem 2rem;border-top:1px solid var(--border);margin-top:2rem;}
+  .footer-link{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.8rem;color:var(--muted);text-decoration:none;letter-spacing:0.1em;border:1px solid var(--border);padding:0.4rem 1.2rem;transition:all 0.2s;}
+  .footer-link:hover{color:var(--accent);border-color:var(--accent);}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
@@ -120,7 +116,15 @@
   <div class="header-line"><span class="header-ornament">✦</span></div>
 </header>
 
+<!-- 検索ボックス -->
+<div class="search-wrap">
+  <span class="search-icon">🔍</span>
+  <input class="search-input" id="searchInput" type="text" placeholder="PC名・ふりがな・通過シナリオで検索…" oninput="renderGrid()">
+</div>
+
+<!-- フィルター -->
 <div class="controls" id="controls"></div>
+
 <div class="grid" id="grid"></div>
 
 <footer>
@@ -128,7 +132,7 @@
 </footer>
 
 <div class="modal-overlay" id="modalOverlay">
-  <div class="modal" id="modal">
+  <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
     <div class="modal-top">
       <div class="modal-portrait" id="modalPortrait"></div>
@@ -139,11 +143,16 @@
       </div>
     </div>
     <div class="modal-body">
+      <!-- プロフィール -->
       <div class="modal-section-title">プロフィール</div>
       <div class="modal-profile" id="modalProfile"></div>
       <div class="modal-quote" id="modalQuote"></div>
+      <!-- ステータス（パーソナルの直下） -->
       <div class="modal-section-title">ステータス</div>
       <div class="modal-stats" id="modalStats"></div>
+      <!-- 特徴表 -->
+      <div id="modalTraitsWrap"></div>
+      <!-- 通過シナリオ -->
       <div id="modalSessionsWrap" style="margin-top:1.5rem"></div>
     </div>
   </div>
@@ -157,10 +166,8 @@ let activeCat = 'all';
 function fixDropboxUrl(url) {
   if (!url) return url;
   if (url.includes('dropbox.com')) {
-    return url
-      .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
-      .replace(/[?&]dl=\d/, '')
-      .replace(/[?&]raw=\d/, '');
+    return url.replace('www.dropbox.com','dl.dropboxusercontent.com')
+              .replace(/[?&]dl=\d/,'').replace(/[?&]raw=\d/,'');
   }
   return url;
 }
@@ -176,63 +183,53 @@ async function loadCharacters() {
 
 function renderFilters() {
   const ctrl = document.getElementById('controls');
-
-  // カテゴリー一覧
   const cats = ['all', ...new Set(characters.map(c => c.category).filter(Boolean))];
-  // ステータス一覧
   const statuses = ['all', ...new Set(characters.map(c => c.status).filter(Boolean))];
 
-  const catBtns = cats.map(s => `
-    <button class="filter-btn ${s === activeCat ? 'active' : ''}" onclick="setCat('${s}')">
-      ${s === 'all' ? 'すべて' : s}
-    </button>`).join('');
+  const catBtns = cats.map(s =>
+    `<button class="filter-btn ${s===activeCat?'active':''}" onclick="setCat('${s.replace(/'/g,"\\'")}')">
+      ${s==='all'?'すべて':s}</button>`).join('');
+  const stBtns = statuses.filter(s=>s!=='all').map(s =>
+    `<button class="filter-btn ${s===activeFilter?'active':''}" onclick="setFilter('${s}')">
+      ${s}</button>`).join('');
 
-  const statusBtns = statuses.filter(s => s !== 'all').map(s => `
-    <button class="filter-btn ${s === activeFilter ? 'active' : ''}" onclick="setFilter('${s}')">
-      ${s}
-    </button>`).join('');
-
-  ctrl.innerHTML = `
-    <div class="filter-group">${catBtns}</div>
-    ${statusBtns ? `<div class="filter-sep"></div><div class="filter-group">${statusBtns}</div>` : ''}
-  `;
+  ctrl.innerHTML = `<div class="filter-group">${catBtns}</div>
+    ${stBtns?`<div class="filter-group">${stBtns}</div>`:''}`;
 }
 
-function setFilter(f) {
-  activeFilter = activeFilter === f ? 'all' : f; // トグル
-  renderFilters();
-  renderGrid();
-}
-function setCat(c) {
-  activeCat = c;
-  renderFilters();
-  renderGrid();
-}
+function setFilter(f) { activeFilter = activeFilter===f?'all':f; renderFilters(); renderGrid(); }
+function setCat(c)    { activeCat = c; renderFilters(); renderGrid(); }
 
 function renderGrid() {
+  const q = (document.getElementById('searchInput')?.value||'').trim().toLowerCase();
   let filtered = characters;
   if (activeCat !== 'all') filtered = filtered.filter(c => c.category === activeCat);
   if (activeFilter !== 'all') filtered = filtered.filter(c => c.status === activeFilter);
+  if (q) filtered = filtered.filter(c =>
+    (c.name||'').toLowerCase().includes(q) ||
+    (c.furigana||'').toLowerCase().includes(q) ||
+    (c.sessions||[]).some(s => s.toLowerCase().includes(q))
+  );
 
   document.getElementById('grid').innerHTML = filtered.map((c, i) => {
-    const cardLine = c.quote || (c.sessions && c.sessions[0]) || '';
+    const cardLine = c.quote || (c.sessions&&c.sessions[0]) || '';
     const pos = c.imagePos || '50% 20%';
     return `
-    <div class="card" style="animation-delay:${i * 0.07}s" onclick="openModal('${c.id}')">
+    <div class="card" style="animation-delay:${i*0.07}s" onclick="openModal('${c.id}')">
       <div class="card-portrait" style="background:linear-gradient(160deg,${c.color||'#7c9bb5'}22,#1a1a1f)">
         ${c.image
-          ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy" style="object-position:${pos}">`
-          : `<div class="card-portrait-placeholder"><span class="placeholder-monogram">${c.name?c.name.charAt(0):'?'}</span></div>`}
-        ${c.status ? `<span class="card-status-badge status-${c.status}">${c.status}</span>` : ''}
+          ?`<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy" style="object-position:${pos}">`
+          :`<div class="card-portrait-placeholder"><span class="placeholder-monogram">${c.name?c.name.charAt(0):'?'}</span></div>`}
+        ${c.status?`<span class="card-status-badge status-${c.status}">${c.status}</span>`:''}
       </div>
       <div class="card-body">
-        ${c.furigana ? `<div class="card-furigana">${c.furigana}</div>` : ''}
+        ${c.furigana?`<div class="card-furigana">${c.furigana}</div>`:''}
         <div class="card-name">${c.name||'（名前なし）'}</div>
         <div class="card-meta">
-          ${c.age ? `<span>${c.age}歳</span>` : ''}
-          ${c.occupation ? `<span>${c.occupation}</span>` : ''}
+          ${c.age?`<span>${c.age}歳</span>`:''}
+          ${c.occupation?`<span>${c.occupation}</span>`:''}
         </div>
-        ${cardLine ? `<div class="card-quote">${cardLine}</div>` : ''}
+        ${cardLine?`<div class="card-quote">${cardLine}</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -246,73 +243,77 @@ function openModal(id) {
   document.getElementById('modalName').textContent = c.name || '';
   document.getElementById('modalProfile').textContent = c.profile || '';
 
-  const quoteEl = document.getElementById('modalQuote');
-  quoteEl.textContent = c.quote || '';
-  quoteEl.style.display = c.quote ? '' : 'none';
+  const qEl = document.getElementById('modalQuote');
+  qEl.textContent = c.quote || '';
+  qEl.style.display = c.quote ? '' : 'none';
 
   document.getElementById('modalMeta').innerHTML = `
-    ${c.age ? `<span>年齢<strong>${c.age}歳</strong></span>` : ''}
-    ${c.occupation ? `<span>職業<strong>${c.occupation}</strong></span>` : ''}
-    ${c.category ? `<span>カテゴリー<strong>${c.category}</strong></span>` : ''}
-    ${c.status ? `<span>状態<strong>${c.status}</strong></span>` : ''}
-  `;
+    ${c.age?`<span>年齢<strong>${c.age}歳</strong></span>`:''}
+    ${c.occupation?`<span>職業<strong>${c.occupation}</strong></span>`:''}
+    ${c.category?`<span>カテゴリー<strong>${c.category}</strong></span>`:''}
+    ${c.status?`<span>状態<strong>${c.status}</strong></span>`:''}`;
 
   const pos = c.imagePos || '50% 20%';
-  const imgUrl = fixDropboxUrl(c.image);
   document.getElementById('modalPortrait').innerHTML = c.image
-    ? `<img src="${imgUrl}" alt="${c.name}" style="object-position:${pos}">`
+    ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" style="object-position:${pos}">`
     : `<div class="modal-portrait-placeholder"><span class="placeholder-monogram" style="font-size:5rem;opacity:0.15">${c.name?c.name.charAt(0):'?'}</span></div>`;
 
   // ステータス
   const statsEl = document.getElementById('modalStats');
   const primary   = ['STR','CON','POW','DEX','APP','SIZ','INT','EDU'];
   const secondary = ['HP','MP','SAN','アイデア','幸運','知識'];
-  const hasAny = keys => c.stats && keys.some(k => c.stats[k] !== '' && c.stats[k] != null);
-  if (c.stats && Object.keys(c.stats).some(k => c.stats[k] !== '' && c.stats[k] != null)) {
-    let html = '';
+  const hasAny = keys => c.stats && keys.some(k => c.stats[k]!==''&&c.stats[k]!=null);
+  if (c.stats && Object.keys(c.stats).some(k=>c.stats[k]!==''&&c.stats[k]!=null)) {
+    let html='';
     if (hasAny(primary)) {
-      html += `<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:-0.25rem">基本能力値</div>`;
-      html += `<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem">` +
-        primary.filter(k => c.stats[k] !== '' && c.stats[k] != null).map(k =>
+      html+=`<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:-0.25rem">基本能力値</div>`;
+      html+=`<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem">`+
+        primary.filter(k=>c.stats[k]!==''&&c.stats[k]!=null).map(k=>
           `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
-        ).join('') + `</div>`;
+        ).join('')+`</div>`;
     }
     if (hasAny(secondary)) {
-      html += `<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-top:0.75rem;margin-bottom:-0.25rem">二次ステータス</div>`;
-      html += `<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem">` +
-        secondary.filter(k => c.stats[k] !== '' && c.stats[k] != null).map(k =>
+      html+=`<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-top:0.75rem;margin-bottom:-0.25rem">二次ステータス</div>`;
+      html+=`<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem">`+
+        secondary.filter(k=>c.stats[k]!==''&&c.stats[k]!=null).map(k=>
           `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
-        ).join('') + `</div>`;
+        ).join('')+`</div>`;
     }
-    if (c.stats['DB'] !== '' && c.stats['DB'] != null) {
-      html += `<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem">` +
-        `<div class="stat-item"><div class="stat-label">DB</div><div class="stat-val" style="font-size:1rem">${c.stats['DB']}</div></div></div>`;
-    }
+    if (c.stats['DB']!==''&&c.stats['DB']!=null)
+      html+=`<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem"><div class="stat-item"><div class="stat-label">DB</div><div class="stat-val" style="font-size:1rem">${c.stats['DB']}</div></div></div>`;
     statsEl.innerHTML = html || '<div style="color:var(--muted);font-size:0.75rem">データなし</div>';
   } else {
     statsEl.innerHTML = '<div style="color:var(--muted);font-size:0.75rem">データなし</div>';
   }
 
-  // 参加シナリオ アコーディオン
+  // 特徴表
+  const traitsWrap = document.getElementById('modalTraitsWrap');
+  if (c.traits && c.traits.length) {
+    traitsWrap.innerHTML = `
+      <div class="modal-section-title">特徴表</div>
+      <table class="traits-table">
+        <thead><tr><th>ダイス</th><th>特徴</th></tr></thead>
+        <tbody>${c.traits.map(t=>`<tr><td>${t.dice||''}</td><td>${t.text||''}</td></tr>`).join('')}</tbody>
+      </table>`;
+  } else {
+    traitsWrap.innerHTML = '';
+  }
+
+  // 通過シナリオ アコーディオン
   const sessWrap = document.getElementById('modalSessionsWrap');
   if (c.sessions && c.sessions.length) {
     sessWrap.innerHTML = `
       <div class="accordion" id="sessAccordion">
         <div class="accordion-header" onclick="toggleAccordion()">
-          <span>
-            <span class="accordion-title">通過シナリオ</span>
-            <span class="accordion-count">${c.sessions.length}件</span>
-          </span>
+          <span><span class="accordion-title">通過シナリオ</span><span class="accordion-count">${c.sessions.length}件</span></span>
           <span class="accordion-arrow">▼</span>
         </div>
         <div class="accordion-body">
-          <ul class="session-list">
-            ${c.sessions.map(s => `<li>${s}</li>`).join('')}
-          </ul>
+          <ul class="session-list">${c.sessions.map(s=>`<li>${s}</li>`).join('')}</ul>
         </div>
       </div>`;
   } else {
-    sessWrap.innerHTML = '<span style="color:var(--muted);font-size:0.75rem">参加記録なし</span>';
+    sessWrap.innerHTML = '';
   }
 
   document.getElementById('modalOverlay').classList.add('open');
@@ -320,18 +321,15 @@ function openModal(id) {
 }
 
 function toggleAccordion() {
-  const acc = document.getElementById('sessAccordion');
-  if (acc) acc.classList.toggle('open');
+  document.getElementById('sessAccordion')?.classList.toggle('open');
 }
-
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-
 document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.getElementById('modalOverlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
 loadCharacters();
 </script>

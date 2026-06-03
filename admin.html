@@ -793,7 +793,19 @@ function renderForm(c) {
       </div>
       <div class="form-group">
         <label>カテゴリー</label>
-        <input id="f-category" value="${esc(c.category||'')}" placeholder="例: 現役・引退・故人">
+        <select id="f-category-select" onchange="onCategorySelect(this.value)">
+          <option value="">-- 選択 --</option>
+          ${[
+            '施設組','教会組','考古学研究所・喫茶店組',
+            '凪・薙一族','四季一族','四神一族',
+            '中華マフィア「煌」','中華マフィア「蓮」',
+            'その他(現代)','その他(海外)','その他(他時代等)'
+          ].map(v=>`<option value="${v}" ${(c.category||'')===v?'selected':''}>${v}</option>`).join('')}
+          <option value="__custom__" ${(c.category&&!['施設組','教会組','考古学研究所・喫茶店組','凪・薙一族','四季一族','四神一族','中華マフィア「煌」','中華マフィア「蓮」','その他(現代)','その他(海外)','その他(他時代等)'].includes(c.category)&&c.category!=='')?'selected':''}>入力して追加…</option>
+        </select>
+        <input id="f-category" value="${esc(c.category||'')}"
+          placeholder="カテゴリー名を入力"
+          style="margin-top:0.35rem;display:${(c.category&&!['施設組','教会組','考古学研究所・喫茶店組','凪・薙一族','四季一族','四神一族','中華マフィア「煌」','中華マフィア「蓮」','その他(現代)','その他(海外)','その他(他時代等)'].includes(c.category))?'block':'none'}">
       </div>
       <div class="form-group">
         <label>ステータス</label>
@@ -876,6 +888,20 @@ function renderForm(c) {
           <label>DB</label>
           <input id="stat-DB" value="${esc(c.stats?.DB ?? '')}" placeholder="例: +1d4">
         </div>
+      </div>
+
+      <div class="section-divider">特徴表</div>
+      <div class="form-group full">
+        <div style="font-size:0.68rem;color:var(--muted);margin-bottom:0.5rem;letter-spacing:0.05em">ダイス目と特徴テキストを入力してください。JSONインポート時は自動反映されます。</div>
+        <div id="traitsRows">
+          ${(c.traits||[]).map((t,i)=>`
+            <div class="trait-row" id="trait-row-${i}" style="display:flex;gap:0.4rem;margin-bottom:0.4rem;align-items:center">
+              <input style="width:70px;flex-shrink:0" placeholder="例: 1" value="${esc(t.dice||'')}" id="trait-dice-${i}">
+              <input style="flex:1" placeholder="特徴テキスト" value="${esc(t.text||'')}" id="trait-text-${i}">
+              <button type="button" style="background:none;border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.5rem;cursor:pointer;font-size:0.7rem;flex-shrink:0" onclick="removeTrait(${i})">✕</button>
+            </div>`).join('')}
+        </div>
+        <button type="button" class="tag-add-btn" style="margin-top:0.4rem" onclick="addTrait()">＋ 行を追加</button>
       </div>
 
       <div class="section-divider">参加シナリオ</div>
@@ -1045,7 +1071,14 @@ function collectFormData() {
   c.furigana   = document.getElementById('f-furigana').value.trim();
   c.age        = document.getElementById('f-age').value.trim();
   c.occupation = document.getElementById('f-occupation').value.trim();
-  c.category   = document.getElementById('f-category')?.value.trim() || '';
+  // カテゴリー：セレクトが__custom__ならテキスト入力値、それ以外はセレクト値
+  const catSel = document.getElementById('f-category-select');
+  const catInp = document.getElementById('f-category');
+  if (catSel && catSel.value === '__custom__') {
+    c.category = catInp ? catInp.value.trim() : '';
+  } else {
+    c.category = catSel ? catSel.value : (catInp ? catInp.value.trim() : '');
+  }
   c.status     = document.getElementById('f-status').value;
   c.color      = document.getElementById('f-color').value;
   c.image      = document.getElementById('f-image').value.trim();
@@ -1060,6 +1093,15 @@ function collectFormData() {
   });
   const dbEl = document.getElementById('stat-DB');
   if (dbEl) c.stats['DB'] = dbEl.value.trim();
+  // 特徴表
+  c.traits = [];
+  let ti = 0;
+  while (document.getElementById(`trait-dice-${ti}`)) {
+    const dice = document.getElementById(`trait-dice-${ti}`).value.trim();
+    const text = document.getElementById(`trait-text-${ti}`).value.trim();
+    if (dice || text) c.traits.push({ dice, text });
+    ti++;
+  }
   characters[idx] = c;
   return c;
 }
@@ -1099,6 +1141,39 @@ function showToast(msg, isError = false) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
+function onCategorySelect(val) {
+  const inp = document.getElementById('f-category');
+  if (!inp) return;
+  if (val === '__custom__') {
+    inp.style.display = 'block';
+    inp.value = '';
+    inp.focus();
+  } else {
+    inp.style.display = 'none';
+    inp.value = val;
+  }
+}
+
+let _traitCount = 0;
+function addTrait() {
+  const container = document.getElementById('traitsRows');
+  if (!container) return;
+  const i = _traitCount++;
+  const row = document.createElement('div');
+  row.className = 'trait-row';
+  row.id = `trait-row-${i}`;
+  row.style.cssText = 'display:flex;gap:0.4rem;margin-bottom:0.4rem;align-items:center';
+  row.innerHTML = `
+    <input style="width:70px;flex-shrink:0" placeholder="例: 1" id="trait-dice-${i}">
+    <input style="flex:1" placeholder="特徴テキスト" id="trait-text-${i}">
+    <button type="button" style="background:none;border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.5rem;cursor:pointer;font-size:0.7rem;flex-shrink:0" onclick="this.parentElement.remove()">✕</button>`;
+  container.appendChild(row);
+}
+
+function removeTrait(i) {
+  document.getElementById(`trait-row-${i}`)?.remove();
+}
+
 init();
 
 // ── インポート ──
@@ -1121,6 +1196,16 @@ function handleImportFile(input) {
   };
   reader.readAsText(file);
   input.value = '';
+}
+
+function convertTraits(raw) {
+  // いあきゃら形式: raw.table が [{dice, content}] or [{num, text}] 等
+  const src = raw.table || raw.traits || raw.feature_table || [];
+  if (!Array.isArray(src) || !src.length) return [];
+  return src.map(row => ({
+    dice: String(row.dice || row.num || row.roll || ''),
+    text: String(row.content || row.text || row.feature || row.value || '')
+  })).filter(r => r.dice || r.text);
 }
 
 function convertCharaSheet(raw) {
@@ -1174,6 +1259,7 @@ function convertCharaSheet(raw) {
     },
     profile: profileBody, quote: '',
     sessions, status,
+    traits: convertTraits(raw),
   };
 }
 </script>
