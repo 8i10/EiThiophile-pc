@@ -20,10 +20,10 @@
   .header-ornament{color:var(--accent);font-family:'Cormorant Garamond',serif;font-size:1.2rem;}
 
   /* 検索 */
-  .search-wrap{position:relative;z-index:1;display:flex;justify-content:center;padding:1.5rem 2rem 0;opacity:0;animation:fadeUp 0.8s ease forwards 0.45s;}
-  .search-input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem 0.5rem 2.2rem;font-family:'Noto Serif JP',serif;font-size:0.8rem;width:100%;max-width:400px;outline:none;transition:border-color 0.2s;}
+  .search-wrap{position:relative;z-index:1;display:flex;justify-content:flex-end;padding:1.5rem 2rem 0;opacity:0;animation:fadeUp 0.8s ease forwards 0.45s;}
+  .search-input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem 0.5rem 2.2rem;font-family:'Noto Serif JP',serif;font-size:0.8rem;width:280px;outline:none;transition:border-color 0.2s;}
   .search-input:focus{border-color:var(--accent);}
-  .search-icon{position:absolute;left:calc(50% - 188px);top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.8rem;pointer-events:none;}
+  .search-icon{position:absolute;right:calc(2rem + 258px);top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.8rem;pointer-events:none;}
 
   /* フィルター */
   .controls{position:relative;z-index:1;display:flex;flex-direction:column;gap:0.5rem;align-items:center;padding:1rem 2rem;opacity:0;animation:fadeUp 0.8s ease forwards 0.5s;}
@@ -67,21 +67,25 @@
   .modal-portrait{background:#1a1a1f;min-height:300px;overflow:hidden;}
   .modal-portrait img{width:100%;height:100%;object-fit:cover;}
   .modal-portrait-placeholder{width:100%;height:100%;min-height:300px;display:flex;align-items:center;justify-content:center;}
-  .modal-info{padding:2rem;}
+  .modal-info{padding:2rem;overflow-y:auto;}
   .modal-furigana{font-size:0.7rem;color:var(--muted);letter-spacing:0.2em;margin-bottom:0.3rem;}
   .modal-name{font-size:1.8rem;font-weight:200;letter-spacing:0.12em;margin-bottom:1rem;}
-  .modal-meta-row{display:flex;gap:2rem;flex-wrap:wrap;font-size:0.75rem;color:var(--muted);padding:0.75rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:0;}
+  .modal-meta-row{display:flex;gap:1.5rem;flex-wrap:wrap;font-size:0.75rem;color:var(--muted);padding:0.75rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:0;}
   .modal-meta-row span strong{color:var(--text);display:block;font-weight:400;font-size:0.85rem;}
+
+  /* ステータス（右パネル内・メタ情報の直下） */
+  .modal-stats-inline{margin-top:1rem;}
+  .modal-stats-inline .stats-block-label{font-size:0.6rem;color:var(--muted);letter-spacing:0.12em;margin-bottom:0.3rem;margin-top:0.6rem;}
+  .modal-stats-inline .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0.3rem;}
+  .modal-stats-inline .stats-row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:0.3rem;}
+  .stat-item{background:var(--bg);border:1px solid var(--border);padding:0.4rem 0.3rem;text-align:center;}
+  .stat-label{font-size:0.55rem;color:var(--muted);letter-spacing:0.08em;}
+  .stat-val{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--accent);}
+
   .modal-body{padding:0 2rem 2rem;}
   .modal-section-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:0.8rem;color:var(--accent);letter-spacing:0.2em;margin-bottom:0.6rem;margin-top:1.5rem;}
   .modal-profile{font-size:0.82rem;line-height:2;color:var(--text);opacity:0.9;white-space:pre-wrap;}
   .modal-quote{border-left:2px solid var(--accent);padding-left:1rem;font-style:italic;font-size:0.82rem;color:var(--muted);line-height:1.8;margin-top:1rem;}
-
-  /* ステータス */
-  .modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem;}
-  .stat-item{background:var(--bg);border:1px solid var(--border);padding:0.5rem;text-align:center;}
-  .stat-label{font-size:0.6rem;color:var(--muted);letter-spacing:0.1em;}
-  .stat-val{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--accent);}
 
   /* 特徴表 */
   .traits-table{width:100%;border-collapse:collapse;font-size:0.78rem;margin-top:0.5rem;}
@@ -140,6 +144,8 @@
         <div class="modal-furigana" id="modalFurigana"></div>
         <div class="modal-name" id="modalName"></div>
         <div class="modal-meta-row" id="modalMeta"></div>
+        <!-- ステータス：メタ情報の直下 -->
+        <div class="modal-stats-inline" id="modalStatsInline"></div>
       </div>
     </div>
     <div class="modal-body">
@@ -147,9 +153,6 @@
       <div class="modal-section-title">プロフィール</div>
       <div class="modal-profile" id="modalProfile"></div>
       <div class="modal-quote" id="modalQuote"></div>
-      <!-- ステータス（パーソナルの直下） -->
-      <div class="modal-section-title">ステータス</div>
-      <div class="modal-stats" id="modalStats"></div>
       <!-- 特徴表 -->
       <div id="modalTraitsWrap"></div>
       <!-- 通過シナリオ -->
@@ -184,17 +187,10 @@ async function loadCharacters() {
 function renderFilters() {
   const ctrl = document.getElementById('controls');
   const cats = ['all', ...new Set(characters.map(c => c.category).filter(Boolean))];
-  const statuses = ['all', ...new Set(characters.map(c => c.status).filter(Boolean))];
-
   const catBtns = cats.map(s =>
     `<button class="filter-btn ${s===activeCat?'active':''}" onclick="setCat('${s.replace(/'/g,"\\'")}')">
       ${s==='all'?'すべて':s}</button>`).join('');
-  const stBtns = statuses.filter(s=>s!=='all').map(s =>
-    `<button class="filter-btn ${s===activeFilter?'active':''}" onclick="setFilter('${s}')">
-      ${s}</button>`).join('');
-
-  ctrl.innerHTML = `<div class="filter-group">${catBtns}</div>
-    ${stBtns?`<div class="filter-group">${stBtns}</div>`:''}`;
+  ctrl.innerHTML = `<div class="filter-group">${catBtns}</div>`;
 }
 
 function setFilter(f) { activeFilter = activeFilter===f?'all':f; renderFilters(); renderGrid(); }
@@ -204,7 +200,6 @@ function renderGrid() {
   const q = (document.getElementById('searchInput')?.value||'').trim().toLowerCase();
   let filtered = characters;
   if (activeCat !== 'all') filtered = filtered.filter(c => c.category === activeCat);
-  if (activeFilter !== 'all') filtered = filtered.filter(c => c.status === activeFilter);
   if (q) filtered = filtered.filter(c =>
     (c.name||'').toLowerCase().includes(q) ||
     (c.furigana||'').toLowerCase().includes(q) ||
@@ -258,32 +253,30 @@ function openModal(id) {
     ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" style="object-position:${pos}">`
     : `<div class="modal-portrait-placeholder"><span class="placeholder-monogram" style="font-size:5rem;opacity:0.15">${c.name?c.name.charAt(0):'?'}</span></div>`;
 
-  // ステータス
-  const statsEl = document.getElementById('modalStats');
+  // ステータス（右パネル内）
+  const statsInline = document.getElementById('modalStatsInline');
   const primary   = ['STR','CON','POW','DEX','APP','SIZ','INT','EDU'];
   const secondary = ['HP','MP','SAN','アイデア','幸運','知識'];
   const hasAny = keys => c.stats && keys.some(k => c.stats[k]!==''&&c.stats[k]!=null);
   if (c.stats && Object.keys(c.stats).some(k=>c.stats[k]!==''&&c.stats[k]!=null)) {
     let html='';
     if (hasAny(primary)) {
-      html+=`<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:-0.25rem">基本能力値</div>`;
-      html+=`<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem">`+
+      html+=`<div class="stats-block-label">基本能力値</div><div class="stats-row">`+
         primary.filter(k=>c.stats[k]!==''&&c.stats[k]!=null).map(k=>
           `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
         ).join('')+`</div>`;
     }
     if (hasAny(secondary)) {
-      html+=`<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-top:0.75rem;margin-bottom:-0.25rem">二次ステータス</div>`;
-      html+=`<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem">`+
+      html+=`<div class="stats-block-label" style="margin-top:0.5rem">二次ステータス</div><div class="stats-row-3">`+
         secondary.filter(k=>c.stats[k]!==''&&c.stats[k]!=null).map(k=>
           `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
         ).join('')+`</div>`;
     }
     if (c.stats['DB']!==''&&c.stats['DB']!=null)
-      html+=`<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem"><div class="stat-item"><div class="stat-label">DB</div><div class="stat-val" style="font-size:1rem">${c.stats['DB']}</div></div></div>`;
-    statsEl.innerHTML = html || '<div style="color:var(--muted);font-size:0.75rem">データなし</div>';
+      html+=`<div class="stats-row" style="margin-top:0.3rem"><div class="stat-item"><div class="stat-label">DB</div><div class="stat-val" style="font-size:0.9rem">${c.stats['DB']}</div></div></div>`;
+    statsInline.innerHTML = html;
   } else {
-    statsEl.innerHTML = '<div style="color:var(--muted);font-size:0.75rem">データなし</div>';
+    statsInline.innerHTML = '';
   }
 
   // 特徴表

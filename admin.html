@@ -966,82 +966,75 @@ function removeTag(i) {
   renderTags('session');
 }
 
-// ── ドラッグクロップ（object-position % 方式）──
-let _cropDragging = false;
-let _cropLastX = 0, _cropLastY = 0;
-let _cropOx = 50, _cropOy = 20;
-let _cropWrapRef = null;
+// ── ドラッグクロップ（完全書き直し）──
+// グローバル状態で管理、IDで毎回要素を取得
+let _crop = { dragging:false, lastX:0, lastY:0, ox:50, oy:20 };
 
-function _cropOnMouseMove(e) {
-  if (!_cropDragging) return;
-  _cropMove(e.clientX, e.clientY);
-}
-function _cropOnMouseUp() {
-  _cropDragging = false;
-  if (_cropWrapRef) _cropWrapRef.style.cursor = 'grab';
-}
-function _cropOnTouchMove(e) {
-  if (!_cropDragging) return;
+window.addEventListener('mousemove', e => {
+  if (!_crop.dragging) return;
+  _doCropMove(e.clientX, e.clientY);
+});
+window.addEventListener('mouseup', () => {
+  if (!_crop.dragging) return;
+  _crop.dragging = false;
+  const w = document.getElementById('cropWrap');
+  if (w) w.style.cursor = 'grab';
+});
+window.addEventListener('touchmove', e => {
+  if (!_crop.dragging) return;
   e.preventDefault();
-  _cropMove(e.touches[0].clientX, e.touches[0].clientY);
-}
+  _doCropMove(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: false });
+window.addEventListener('touchend', () => { _crop.dragging = false; });
 
-// グローバルリスナーは一度だけ登録
-window.addEventListener('mousemove', _cropOnMouseMove);
-window.addEventListener('mouseup',   _cropOnMouseUp);
-window.addEventListener('touchmove', _cropOnTouchMove, { passive: false });
-window.addEventListener('touchend',  _cropOnMouseUp);
-
-function _cropApplyPos() {
-  const img = document.getElementById('cropImg');
-  if (!img) return;
-  img.style.objectPosition = `${_cropOx.toFixed(1)}% ${_cropOy.toFixed(1)}%`;
-  const idx = characters.findIndex(ch => ch.id === currentId);
-  if (idx !== -1) characters[idx].imagePos = `${_cropOx.toFixed(1)}% ${_cropOy.toFixed(1)}%`;
-}
-
-function _cropMove(ex, ey) {
+function _doCropMove(ex, ey) {
   const wrap = document.getElementById('cropWrap');
-  const dx = ex - _cropLastX, dy = ey - _cropLastY;
-  _cropLastX = ex; _cropLastY = ey;
-  const W = (wrap ? wrap.offsetWidth  : 120) || 120;
-  const H = (wrap ? wrap.offsetHeight : 160) || 160;
-  // 左にドラッグ → 表示位置を右へ（反転）
-  _cropOx -= (dx / W) * 100 * 0.5;
-  _cropOy -= (dy / H) * 100 * 0.5;
-  _cropOx = Math.max(0, Math.min(100, _cropOx));
-  _cropOy = Math.max(0, Math.min(100, _cropOy));
-  _cropApplyPos();
+  const img  = document.getElementById('cropImg');
+  if (!wrap || !img) { _crop.dragging = false; return; }
+  const dx = ex - _crop.lastX;
+  const dy = ey - _crop.lastY;
+  _crop.lastX = ex;
+  _crop.lastY = ey;
+  const W = wrap.offsetWidth  || 120;
+  const H = wrap.offsetHeight || 160;
+  // ドラッグ方向と逆に動かす（画像を引っ張るイメージ）
+  _crop.ox -= (dx / W) * 100 * 0.6;
+  _crop.oy -= (dy / H) * 100 * 0.6;
+  _crop.ox = Math.max(0, Math.min(100, _crop.ox));
+  _crop.oy = Math.max(0, Math.min(100, _crop.oy));
+  img.style.objectPosition = `${_crop.ox.toFixed(1)}% ${_crop.oy.toFixed(1)}%`;
+  // characters[]に即保存
+  const idx = characters.findIndex(ch => ch.id === currentId);
+  if (idx !== -1) characters[idx].imagePos = `${_crop.ox.toFixed(1)}% ${_crop.oy.toFixed(1)}%`;
 }
 
 function initCrop(c) {
   const wrap = document.getElementById('cropWrap');
-  if (!wrap) return;
-  _cropWrapRef = wrap;
+  const img  = document.getElementById('cropImg');
+  if (!wrap || !img) return;
 
-  // 保存済みimagePos を復元
-  _cropOx = 50; _cropOy = 20;
+  // 初期位置を復元
+  _crop.ox = 50; _crop.oy = 20;
   if (c.imagePos && c.imagePos.includes('%')) {
     const parts = c.imagePos.trim().split(/\s+/);
-    _cropOx = parseFloat(parts[0]) || 50;
-    _cropOy = parseFloat(parts[1]) || 20;
+    _crop.ox = parseFloat(parts[0]) || 50;
+    _crop.oy = parseFloat(parts[1]) || 20;
   }
-  _cropApplyPos();
+  img.style.objectPosition = `${_crop.ox.toFixed(1)}% ${_crop.oy.toFixed(1)}%`;
 
-  // mousedown / touchstart はwrapに直接（renderFormのたびに付け直す）
-  // 古いリスナーをクリアするためwrapのonmousedown/ontouchstartを上書き
+  // onmousedown/ontouchstart を毎回上書き（古いハンドラを自動で置き換え）
   wrap.onmousedown = e => {
     e.preventDefault();
-    _cropDragging = true;
-    _cropLastX = e.clientX;
-    _cropLastY = e.clientY;
+    _crop.dragging = true;
+    _crop.lastX = e.clientX;
+    _crop.lastY = e.clientY;
     wrap.style.cursor = 'grabbing';
   };
   wrap.ontouchstart = e => {
     e.preventDefault();
-    _cropDragging = true;
-    _cropLastX = e.touches[0].clientX;
-    _cropLastY = e.touches[0].clientY;
+    _crop.dragging = true;
+    _crop.lastX = e.touches[0].clientX;
+    _crop.lastY = e.touches[0].clientY;
   };
 }
 
