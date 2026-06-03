@@ -16,400 +16,101 @@
     --accent: #c9a96e;
     --accent-dim: rgba(201,169,110,0.15);
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Serif JP', serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Serif JP', serif; min-height: 100vh; overflow-x: hidden; }
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
+    content: ''; position: fixed; inset: 0;
     background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(201,169,110,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
-  header {
-    position: relative;
-    z-index: 1;
-    padding: 4rem 2rem 2rem;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  h1 {
-    font-size: clamp(1.2rem, 3vw, 2rem);
-    font-weight: 200;
-    letter-spacing: 0.5em;
-    color: var(--text);
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 0.2s;
-  }
-
-  .header-line {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 1.5rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 0.35s;
-  }
-  .header-line::before, .header-line::after {
-    content: '';
-    flex: 1;
-    max-width: 120px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent));
-  }
+  header { position: relative; z-index: 1; padding: 4rem 2rem 2rem; text-align: center; border-bottom: 1px solid var(--border); }
+  h1 { font-size: clamp(1.2rem, 3vw, 2rem); font-weight: 200; letter-spacing: 0.5em; color: var(--text); opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s; }
+  .header-line { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-top: 1.5rem; opacity: 0; animation: fadeUp 0.8s ease forwards 0.35s; }
+  .header-line::before, .header-line::after { content: ''; flex: 1; max-width: 120px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent)); }
   .header-line::after { background: linear-gradient(90deg, var(--accent), transparent); }
   .header-ornament { color: var(--accent); font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; }
 
-  .controls {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    gap: 0.75rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 2rem 2rem 1rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 0.5s;
-  }
+  /* フィルター */
+  .controls { position: relative; z-index: 1; display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; padding: 2rem 2rem 1rem; opacity: 0; animation: fadeUp 0.8s ease forwards 0.5s; }
+  .filter-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.35rem 1rem; font-family: 'Noto Serif JP', serif; font-size: 0.72rem; letter-spacing: 0.1em; cursor: pointer; transition: all 0.2s; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .filter-group { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+  .filter-sep { width: 1px; background: var(--border); align-self: stretch; margin: 0 0.25rem; }
 
-  .filter-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 0.4rem 1.2rem;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .filter-btn:hover, .filter-btn.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--accent-dim);
-  }
+  /* グリッド：カード幅を少し狭く */
+  .grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; padding: 2rem; max-width: 1200px; margin: 0 auto; }
 
-  .grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  /* ── Card ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    opacity: 0;
-    animation: fadeUp 0.6s ease forwards;
-    position: relative;
-    overflow: hidden;
-  }
-  .card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-dim);
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0;
-    transition: opacity 0.25s;
-  }
+  /* カード */
+  .card { background: var(--surface); border: 1px solid var(--border); cursor: pointer; transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; opacity: 0; animation: fadeUp 0.6s ease forwards; position: relative; overflow: hidden; }
+  .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--accent-dim); }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0; transition: opacity 0.25s; }
   .card:hover::before { opacity: 1; }
 
-  /* 画像：object-position を center にしてアップ */
-  .card-portrait {
-    width: 100%;
-    height: 220px;
-    background: #1a1a1f;
-    overflow: hidden;
-    position: relative;
-  }
-  .card-portrait img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center 20%;  /* ← top より少し下げてアップ寄りに */
-    transition: transform 0.4s ease;
-  }
+  .card-portrait { width: 100%; height: 200px; background: #1a1a1f; overflow: hidden; position: relative; }
+  .card-portrait img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
   .card:hover .card-portrait img { transform: scale(1.06); }
 
-  .card-portrait-placeholder {
-    width: 100%; height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .placeholder-monogram {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 4rem;
-    font-weight: 300;
-    opacity: 0.2;
-  }
+  .card-portrait-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .placeholder-monogram { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-weight: 300; opacity: 0.2; }
 
-  .card-status-badge {
-    position: absolute;
-    top: 10px; right: 10px;
-    padding: 0.2rem 0.6rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    font-family: 'Cormorant Garamond', serif;
-  }
+  .card-status-badge { position: absolute; top: 10px; right: 10px; padding: 0.2rem 0.6rem; font-size: 0.65rem; letter-spacing: 0.1em; font-family: 'Cormorant Garamond', serif; }
   .status-生存 { background: rgba(100,160,100,0.2); color: #8cc48c; border: 1px solid rgba(100,160,100,0.4); }
   .status-死亡 { background: rgba(160,80,80,0.2);  color: #c48c8c; border: 1px solid rgba(160,80,80,0.4); }
   .status-不明 { background: rgba(160,160,100,0.2);color: #c4c48c; border: 1px solid rgba(160,160,100,0.4); }
   .status-引退 { background: rgba(100,100,160,0.2); color: #8c8cc4; border: 1px solid rgba(100,100,160,0.4); }
 
-  .card-body { padding: 1.25rem 1.5rem 1.5rem; }
+  .card-body { padding: 1rem 1.25rem 1.25rem; }
+  .card-furigana { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.18em; margin-bottom: 0.12rem; }
+  .card-name { font-size: 1.3rem; font-weight: 300; letter-spacing: 0.1em; margin-bottom: 0.6rem; }
+  .card-meta { display: flex; gap: 0.75rem; font-size: 0.7rem; color: var(--muted); padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); margin-bottom: 0.6rem; }
+  .card-quote { font-size: 0.72rem; color: var(--muted); font-style: italic; line-height: 1.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .card-furigana {
-    font-size: 0.62rem;
-    color: var(--muted);
-    letter-spacing: 0.18em;
-    margin-bottom: 0.15rem;
-  }
-  .card-name {
-    font-size: 1.4rem;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.75rem;
-  }
-
-  .card-meta {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 0.75rem;
-  }
-
-  /* 一言（シナリオ1行目 or quote） */
-  .card-quote {
-    font-size: 0.75rem;
-    color: var(--muted);
-    font-style: italic;
-    line-height: 1.6;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* ── Modal ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    backdrop-filter: blur(4px);
-  }
+  /* モーダル */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1.5rem; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(4px); }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    max-width: 720px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    transform: translateY(16px);
-    transition: transform 0.2s;
-    position: relative;
-  }
+  .modal { background: var(--surface); border: 1px solid var(--border); max-width: 720px; width: 100%; max-height: 90vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.2s; position: relative; }
   .modal-overlay.open .modal { transform: translateY(0); }
-
-  .modal-close {
-    position: absolute;
-    top: 1rem; right: 1rem;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    width: 2rem; height: 2rem;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-    z-index: 10;
-  }
+  .modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: 1px solid var(--border); color: var(--muted); width: 2rem; height: 2rem; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
   .modal-close:hover { border-color: var(--accent); color: var(--accent); }
-
-  .modal-top {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-  }
+  .modal-top { display: grid; grid-template-columns: 240px 1fr; }
   @media (max-width: 560px) { .modal-top { grid-template-columns: 1fr; } }
-
-  .modal-portrait {
-    background: #1a1a1f;
-    min-height: 300px;
-    overflow: hidden;
-  }
-  .modal-portrait img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center 20%;
-  }
-  .modal-portrait-placeholder {
-    width: 100%; height: 100%; min-height: 300px;
-    display: flex; align-items: center; justify-content: center;
-  }
-
+  .modal-portrait { background: #1a1a1f; min-height: 300px; overflow: hidden; }
+  .modal-portrait img { width: 100%; height: 100%; object-fit: cover; }
+  .modal-portrait-placeholder { width: 100%; height: 100%; min-height: 300px; display: flex; align-items: center; justify-content: center; }
   .modal-info { padding: 2rem; }
   .modal-furigana { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.2em; margin-bottom: 0.3rem; }
   .modal-name { font-size: 1.8rem; font-weight: 200; letter-spacing: 0.12em; margin-bottom: 1rem; }
-
-  .modal-meta-row {
-    display: flex; gap: 2rem; flex-wrap: wrap;
-    font-size: 0.75rem; color: var(--muted);
-    padding: 0.75rem 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 1rem;
-  }
-  .modal-meta-row span strong {
-    color: var(--text);
-    display: block;
-    font-weight: 400;
-    font-size: 0.85rem;
-  }
-
+  .modal-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; font-size: 0.75rem; color: var(--muted); padding: 0.75rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+  .modal-meta-row span strong { color: var(--text); display: block; font-weight: 400; font-size: 0.85rem; }
   .modal-body { padding: 0 2rem 2rem; }
-  .modal-section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 0.8rem;
-    color: var(--accent);
-    letter-spacing: 0.2em;
-    margin-bottom: 0.6rem;
-    margin-top: 1.5rem;
-  }
-
+  .modal-section-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.8rem; color: var(--accent); letter-spacing: 0.2em; margin-bottom: 0.6rem; margin-top: 1.5rem; }
   .modal-profile { font-size: 0.82rem; line-height: 2; color: var(--text); opacity: 0.9; white-space: pre-wrap; }
-  .modal-quote {
-    border-left: 2px solid var(--accent);
-    padding-left: 1rem;
-    font-style: italic;
-    font-size: 0.82rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-top: 1rem;
-  }
-
-  .modal-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
+  .modal-quote { border-left: 2px solid var(--accent); padding-left: 1rem; font-style: italic; font-size: 0.82rem; color: var(--muted); line-height: 1.8; margin-top: 1rem; }
+  .modal-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
   .stat-item { background: var(--bg); border: 1px solid var(--border); padding: 0.5rem; text-align: center; }
   .stat-label { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; }
   .stat-val { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--accent); }
 
-  /* ── アコーディオン（シナリオ） ── */
-  .accordion {
-    border: 1px solid var(--border);
-    margin-top: 0.5rem;
-  }
-  .accordion-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 0.9rem;
-    cursor: pointer;
-    font-size: 0.75rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    user-select: none;
-    transition: background 0.15s, color 0.15s;
-  }
+  /* アコーディオン */
+  .accordion { border: 1px solid var(--border); margin-top: 0.5rem; }
+  .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0.9rem; cursor: pointer; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.08em; user-select: none; transition: background 0.15s, color 0.15s; }
   .accordion-header:hover { background: rgba(255,255,255,0.03); color: var(--text); }
-  .accordion-arrow {
-    font-size: 0.6rem;
-    transition: transform 0.2s;
-    color: var(--accent);
-  }
+  .accordion-title { font-family: 'Cormorant Garamond', serif; font-style: italic; color: var(--accent); font-size: 0.8rem; letter-spacing: 0.15em; }
+  .accordion-count { font-size: 0.68rem; color: var(--muted); margin-left: 0.5rem; }
+  .accordion-arrow { font-size: 0.6rem; transition: transform 0.2s; color: var(--accent); }
   .accordion.open .accordion-arrow { transform: rotate(180deg); }
-  .accordion-body {
-    display: none;
-    padding: 0.75rem 1rem 1rem;
-    border-top: 1px solid var(--border);
-  }
+  .accordion-body { display: none; padding: 0.75rem 1rem 1rem; border-top: 1px solid var(--border); }
   .accordion.open .accordion-body { display: block; }
-  .session-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .session-list li {
-    font-size: 0.78rem;
-    color: var(--muted);
-    padding-left: 1em;
-    position: relative;
-    line-height: 1.6;
-  }
-  .session-list li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-size: 0.7rem;
-  }
+  .session-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .session-list li { font-size: 0.78rem; color: var(--muted); padding-left: 1em; position: relative; line-height: 1.6; }
+  .session-list li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-size: 0.7rem; }
 
-  footer {
-    position: relative; z-index: 1;
-    text-align: center;
-    padding: 3rem 2rem;
-    border-top: 1px solid var(--border);
-    margin-top: 2rem;
-  }
-  .footer-link {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 0.8rem;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    border: 1px solid var(--border);
-    padding: 0.4rem 1.2rem;
-    transition: all 0.2s;
-  }
+  footer { position: relative; z-index: 1; text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+  .footer-link { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.8rem; color: var(--muted); text-decoration: none; letter-spacing: 0.1em; border: 1px solid var(--border); padding: 0.4rem 1.2rem; transition: all 0.2s; }
   .footer-link:hover { color: var(--accent); border-color: var(--accent); }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
@@ -452,6 +153,7 @@
 <script>
 let characters = [];
 let activeFilter = 'all';
+let activeCat = 'all';
 
 function fixDropboxUrl(url) {
   if (!url) return url;
@@ -474,38 +176,59 @@ async function loadCharacters() {
 }
 
 function renderFilters() {
+  const ctrl = document.getElementById('controls');
+
+  // カテゴリー一覧
+  const cats = ['all', ...new Set(characters.map(c => c.category).filter(Boolean))];
+  // ステータス一覧
   const statuses = ['all', ...new Set(characters.map(c => c.status).filter(Boolean))];
-  document.getElementById('controls').innerHTML = statuses.map(s => `
-    <button class="filter-btn ${s === activeFilter ? 'active' : ''}" onclick="setFilter('${s}')">
+
+  const catBtns = cats.map(s => `
+    <button class="filter-btn ${s === activeCat ? 'active' : ''}" onclick="setCat('${s}')">
       ${s === 'all' ? 'すべて' : s}
-    </button>
-  `).join('');
+    </button>`).join('');
+
+  const statusBtns = statuses.filter(s => s !== 'all').map(s => `
+    <button class="filter-btn ${s === activeFilter ? 'active' : ''}" onclick="setFilter('${s}')">
+      ${s}
+    </button>`).join('');
+
+  ctrl.innerHTML = `
+    <div class="filter-group">${catBtns}</div>
+    ${statusBtns ? `<div class="filter-sep"></div><div class="filter-group">${statusBtns}</div>` : ''}
+  `;
 }
 
 function setFilter(f) {
-  activeFilter = f;
+  activeFilter = activeFilter === f ? 'all' : f; // トグル
+  renderFilters();
+  renderGrid();
+}
+function setCat(c) {
+  activeCat = c;
   renderFilters();
   renderGrid();
 }
 
 function renderGrid() {
-  const filtered = activeFilter === 'all' ? characters : characters.filter(c => c.status === activeFilter);
+  let filtered = characters;
+  if (activeCat !== 'all') filtered = filtered.filter(c => c.category === activeCat);
+  if (activeFilter !== 'all') filtered = filtered.filter(c => c.status === activeFilter);
 
   document.getElementById('grid').innerHTML = filtered.map((c, i) => {
-    // カード下部の一言：quote があればそちら、なければ通過シナリオ1行目
     const cardLine = c.quote || (c.sessions && c.sessions[0]) || '';
-
+    const pos = c.imagePos || '50% 20%';
     return `
     <div class="card" style="animation-delay:${i * 0.07}s" onclick="openModal('${c.id}')">
-      <div class="card-portrait" style="background: linear-gradient(160deg, ${c.color || '#7c9bb5'}22, #1a1a1f)">
+      <div class="card-portrait" style="background:linear-gradient(160deg,${c.color||'#7c9bb5'}22,#1a1a1f)">
         ${c.image
-          ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy" style="object-position:${c.imagePos||'50% 20%'}">`
-          : `<div class="card-portrait-placeholder"><span class="placeholder-monogram">${c.name ? c.name.charAt(0) : '?'}</span></div>`}
+          ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy" style="object-position:${pos}">`
+          : `<div class="card-portrait-placeholder"><span class="placeholder-monogram">${c.name?c.name.charAt(0):'?'}</span></div>`}
         ${c.status ? `<span class="card-status-badge status-${c.status}">${c.status}</span>` : ''}
       </div>
       <div class="card-body">
         ${c.furigana ? `<div class="card-furigana">${c.furigana}</div>` : ''}
-        <div class="card-name">${c.name || '（名前なし）'}</div>
+        <div class="card-name">${c.name||'（名前なし）'}</div>
         <div class="card-meta">
           ${c.age ? `<span>${c.age}歳</span>` : ''}
           ${c.occupation ? `<span>${c.occupation}</span>` : ''}
@@ -522,45 +245,47 @@ function openModal(id) {
 
   document.getElementById('modalFurigana').textContent = c.furigana || '';
   document.getElementById('modalName').textContent = c.name || '';
-  // profile の改行を保持（pre-wrap で対応済み）
   document.getElementById('modalProfile').textContent = c.profile || '';
-  document.getElementById('modalQuote').textContent = c.quote || '';
-  // quote がない場合は枠ごと非表示
-  document.getElementById('modalQuote').style.display = c.quote ? '' : 'none';
+
+  const quoteEl = document.getElementById('modalQuote');
+  quoteEl.textContent = c.quote || '';
+  quoteEl.style.display = c.quote ? '' : 'none';
 
   document.getElementById('modalMeta').innerHTML = `
     ${c.age ? `<span>年齢<strong>${c.age}歳</strong></span>` : ''}
     ${c.occupation ? `<span>職業<strong>${c.occupation}</strong></span>` : ''}
+    ${c.category ? `<span>カテゴリー<strong>${c.category}</strong></span>` : ''}
     ${c.status ? `<span>状態<strong>${c.status}</strong></span>` : ''}
   `;
 
+  const pos = c.imagePos || '50% 20%';
   const imgUrl = fixDropboxUrl(c.image);
   document.getElementById('modalPortrait').innerHTML = c.image
-    ? `<img src="${imgUrl}" alt="${c.name}" style="object-position:${c.imagePos||'50% 20%'}">`
-    : `<div class="modal-portrait-placeholder"><span class="placeholder-monogram" style="font-size:5rem;opacity:0.15">${c.name ? c.name.charAt(0) : '?'}</span></div>`;
+    ? `<img src="${imgUrl}" alt="${c.name}" style="object-position:${pos}">`
+    : `<div class="modal-portrait-placeholder"><span class="placeholder-monogram" style="font-size:5rem;opacity:0.15">${c.name?c.name.charAt(0):'?'}</span></div>`;
 
   // ステータス
   const statsEl = document.getElementById('modalStats');
-  if (c.stats && Object.keys(c.stats).some(k => c.stats[k] !== '' && c.stats[k] !== undefined)) {
-    const primary   = ['STR','CON','POW','DEX','APP','SIZ','INT','EDU'];
-    const secondary = ['HP','MP','SAN','アイデア','幸運','知識'];
-    const hasAny = keys => keys.some(k => c.stats[k] !== '' && c.stats[k] !== undefined);
+  const primary   = ['STR','CON','POW','DEX','APP','SIZ','INT','EDU'];
+  const secondary = ['HP','MP','SAN','アイデア','幸運','知識'];
+  const hasAny = keys => c.stats && keys.some(k => c.stats[k] !== '' && c.stats[k] != null);
+  if (c.stats && Object.keys(c.stats).some(k => c.stats[k] !== '' && c.stats[k] != null)) {
     let html = '';
     if (hasAny(primary)) {
       html += `<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-bottom:-0.25rem">基本能力値</div>`;
       html += `<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem">` +
-        primary.filter(k => c.stats[k] !== '' && c.stats[k] !== undefined).map(k =>
+        primary.filter(k => c.stats[k] !== '' && c.stats[k] != null).map(k =>
           `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
         ).join('') + `</div>`;
     }
     if (hasAny(secondary)) {
       html += `<div style="grid-column:1/-1;font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;margin-top:0.75rem;margin-bottom:-0.25rem">二次ステータス</div>`;
       html += `<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem">` +
-        secondary.filter(k => c.stats[k] !== '' && c.stats[k] !== undefined).map(k =>
+        secondary.filter(k => c.stats[k] !== '' && c.stats[k] != null).map(k =>
           `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
         ).join('') + `</div>`;
     }
-    if (c.stats['DB'] !== '' && c.stats['DB'] !== undefined) {
+    if (c.stats['DB'] !== '' && c.stats['DB'] != null) {
       html += `<div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-top:0.5rem">` +
         `<div class="stat-item"><div class="stat-label">DB</div><div class="stat-val" style="font-size:1rem">${c.stats['DB']}</div></div></div>`;
     }
@@ -575,7 +300,10 @@ function openModal(id) {
     sessWrap.innerHTML = `
       <div class="accordion" id="sessAccordion">
         <div class="accordion-header" onclick="toggleAccordion()">
-          <span>${c.sessions.length}件</span>
+          <span>
+            <span class="accordion-title">通過シナリオ</span>
+            <span class="accordion-count">${c.sessions.length}件</span>
+          </span>
           <span class="accordion-arrow">▼</span>
         </div>
         <div class="accordion-body">
@@ -603,9 +331,7 @@ function closeModal() {
 }
 
 document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 loadCharacters();
