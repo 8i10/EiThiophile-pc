@@ -485,8 +485,7 @@
         <div class="edit-header-id" id="editHeaderId"></div>
       </div>
       <div class="edit-header-actions">
-        <button class="btn primary" onclick="saveChar()">保存</button>
-        <button class="btn-push" id="btnPush" onclick="pushToGitHub()" title="GitHubに反映">↑ GitHubに反映</button>
+        <button class="btn primary" onclick="saveAndPush()">保存</button>
       </div>
     </div>
 
@@ -582,21 +581,18 @@ function updateGhNotice() {
   const el = document.getElementById('ghNoticeText');
   if (!el) return;
   if (s.repo && s.token) {
-    el.innerHTML = `✓ 接続先: <strong style="color:var(--accent)">${s.repo}</strong> / ${s.path}`;
+    el.innerHTML = `✓ 接続先: <strong style="color:var(--accent)">${s.repo}</strong> / ${s.path} &nbsp;—&nbsp; 「保存」で自動反映されます`;
   } else {
-    el.textContent = '⚙ まず「GitHub設定」でリポジトリとトークンを設定してください。';
+    el.textContent = '⚙ まず「GitHub設定」でリポジトリとトークンを設定してください。設定済みの場合、「保存」ボタンで自動的にGitHubへ反映されます。';
   }
 }
 
 // ── GitHub API: characters.json を push ──
 async function pushToGitHub() {
   const s = loadGhSettings();
-  if (!s.repo || !s.token) {
-    openGhSettings();
-    return;
-  }
+  if (!s.repo || !s.token) return; // 設定なしは黙って無視（手動コピーで対応）
 
-  const btn = document.getElementById('btnPush');
+  const btn = document.querySelector('.edit-header-actions .btn.primary');
   if (btn) { btn.disabled = true; btn.textContent = '反映中…'; }
 
   try {
@@ -643,7 +639,7 @@ async function pushToGitHub() {
   } catch (e) {
     showToast('エラー: ' + e.message, true);
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '↑ GitHubに反映'; }
+    if (btn) { btn.disabled = false; btn.textContent = '保存'; }
   }
 }
 
@@ -840,12 +836,9 @@ function renderForm(c) {
       <div class="section-divider">GitHubに反映</div>
       <div class="form-group full">
         <div class="notice" id="ghNotice">
-          <span id="ghNoticeText">⚙ まず「GitHub設定」でリポジトリとトークンを設定してください。</span>
+          <span id="ghNoticeText">⚙ まず「GitHub設定」でリポジトリとトークンを設定してください。設定済みの場合、「保存」ボタンで自動的にGitHubへ反映されます。</span>
         </div>
-        <div style="display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
-          <button class="btn-push" onclick="saveAndPush()">保存 → GitHubに反映</button>
-          <button class="btn" onclick="exportJSON()">📋 JSONをコピー（手動用）</button>
-        </div>
+        <button class="btn" style="margin-top:0.75rem" onclick="exportJSON()">📋 JSONをコピー（手動更新用）</button>
         <textarea class="json-area" id="jsonArea" readonly placeholder="「保存」後にJSONが表示されます"></textarea>
       </div>
 
