@@ -40,8 +40,8 @@
   .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity 0.25s;}
   .card:hover::before{opacity:1;}
   .card-portrait{width:100%;height:200px;background:#1a1a1f;overflow:hidden;position:relative;}
-  .card-portrait img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;}
-  .card:hover .card-portrait img{transform:scale(1.06);}
+  .card-portrait img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;transform-origin:var(--img-ox,50%) var(--img-oy,20%);}
+  .card:hover .card-portrait img{transform:scale(calc(var(--img-scale,1.0) * 1.04));}
   .card-portrait-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
   .placeholder-monogram{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;opacity:0.2;}
   .card-status-badge{position:absolute;top:10px;right:10px;padding:0.2rem 0.6rem;font-size:0.65rem;letter-spacing:0.1em;font-family:'Cormorant Garamond',serif;}
@@ -65,7 +65,7 @@
   .modal-top{display:grid;grid-template-columns:240px 1fr;}
   @media(max-width:560px){.modal-top{grid-template-columns:1fr;}}
   .modal-portrait{background:#1a1a1f;min-height:300px;overflow:hidden;}
-  .modal-portrait img{width:100%;height:100%;object-fit:cover;}
+  .modal-portrait img{width:100%;height:100%;object-fit:cover;transform-origin:var(--img-ox,50%) var(--img-oy,20%);transform:scale(var(--img-scale,1.0));}
   .modal-portrait-placeholder{width:100%;height:100%;min-height:300px;display:flex;align-items:center;justify-content:center;}
   .modal-info{padding:2rem;overflow-y:auto;}
   .modal-furigana{font-size:0.7rem;color:var(--muted);letter-spacing:0.2em;margin-bottom:0.3rem;}
@@ -209,11 +209,13 @@ function renderGrid() {
   document.getElementById('grid').innerHTML = filtered.map((c, i) => {
     const cardLine = c.quote || (c.sessions&&c.sessions[0]) || '';
     const pos = c.imagePos || '50% 20%';
+    const [ox, oy] = pos.split(' ');
+    const sc = c.imageScale || 1.0;
     return `
     <div class="card" style="animation-delay:${i*0.07}s" onclick="openModal('${c.id}')">
       <div class="card-portrait" style="background:linear-gradient(160deg,${c.color||'#7c9bb5'}22,#1a1a1f)">
         ${c.image
-          ?`<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy" style="object-position:${pos}">`
+          ?`<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" loading="lazy" style="object-position:${pos};--img-ox:${ox};--img-oy:${oy};--img-scale:${sc};transform:scale(${sc});transform-origin:${ox} ${oy}">`
           :`<div class="card-portrait-placeholder"><span class="placeholder-monogram">${c.name?c.name.charAt(0):'?'}</span></div>`}
         ${c.status?`<span class="card-status-badge status-${c.status}">${c.status}</span>`:''}
       </div>
@@ -249,8 +251,10 @@ function openModal(id) {
     ${c.status?`<span>状態<strong>${c.status}</strong></span>`:''}`;
 
   const pos = c.imagePos || '50% 20%';
+  const [ox, oy] = pos.split(' ');
+  const sc = c.imageScale || 1.0;
   document.getElementById('modalPortrait').innerHTML = c.image
-    ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" style="object-position:${pos}">`
+    ? `<img src="${fixDropboxUrl(c.image)}" alt="${c.name}" style="object-position:${pos};transform:scale(${sc});transform-origin:${ox} ${oy}">`
     : `<div class="modal-portrait-placeholder"><span class="placeholder-monogram" style="font-size:5rem;opacity:0.15">${c.name?c.name.charAt(0):'?'}</span></div>`;
 
   // ステータス（右パネル内）
