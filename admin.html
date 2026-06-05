@@ -3,6 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="favicon.png" type="image/png">
+<script>
+// 認証チェック（ページ描画前に実行）
+(async function(){
+  const stored = sessionStorage.getItem('admin_auth');
+  if (!stored) { location.replace('login.html'); return; }
+  async function sha256(s){
+    const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  const PASS_HASH='a0b3e52b487b26ce296364eac9aca2b13668ebc9b3920ceac8de1e634a25c663';
+  const expected = btoa('cracktrackxxxx@gmail.com:'+PASS_HASH.slice(0,16));
+  if (stored !== expected) { sessionStorage.removeItem('admin_auth'); location.replace('login.html'); }
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>探索者編集 — Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
