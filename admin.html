@@ -1390,7 +1390,7 @@ function convertCharaSheet(raw) {
   return {
     id,
     name: inp.pcname || '', furigana: inp.furigana || '',
-    age: inp.age || '', occupation: inp.job || '',
+    age: inp.age || '', birthday: inp.birthday || '', occupation: inp.job || '',
     image: '', color: inp.txtcolor || '#7c9bb5',
     stats: {
       STR: n(inp.str), CON: n(inp.con), POW: pow,
