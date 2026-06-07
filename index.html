@@ -181,6 +181,12 @@ async function loadCharacters() {
     const res = await fetch('characters.json?t=' + Date.now());
     characters = await res.json();
   } catch { characters = []; }
+  // ふりがなで五十音順ソート（カタカナ→ひらがな正規化）
+  characters.sort((a, b) => {
+    const toHira = s => (s || '').replace(/[\u30A1-\u30F6]/g, c =>
+      String.fromCharCode(c.charCodeAt(0) - 0x60));
+    return toHira(a.furigana).localeCompare(toHira(b.furigana), 'ja');
+  });
   renderFilters();
   renderGrid();
 }
@@ -197,6 +203,10 @@ function renderFilters() {
 function setFilter(f) { activeFilter = activeFilter===f?'all':f; renderFilters(); renderGrid(); }
 function setCat(c)    { activeCat = c; renderFilters(); renderGrid(); }
 
+function toHira(s) {
+  return (s || '').replace(/[\u30A1-\u30F6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+}
+
 function renderGrid() {
   const q = (document.getElementById('searchInput')?.value||'').trim().toLowerCase();
   let filtered = characters;
@@ -205,6 +215,10 @@ function renderGrid() {
     (c.name||'').toLowerCase().includes(q) ||
     (c.furigana||'').toLowerCase().includes(q) ||
     (c.sessions||[]).some(s => s.toLowerCase().includes(q))
+  );
+  // 五十音順ソート（ひらがな・カタカナ混合対応）
+  filtered = [...filtered].sort((a, b) =>
+    toHira(a.furigana).localeCompare(toHira(b.furigana), 'ja')
   );
 
   document.getElementById('grid').innerHTML = filtered.map((c, i) => {
