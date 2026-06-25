@@ -758,7 +758,7 @@ function selectChar(id) {
 }
 
 function createNew() {
-  const id = Date.now().toString();
+  const id = Date.now().toString() + '_' + Math.random().toString(36).slice(2, 9);
   const c = {
     id, name: '', furigana: '', age: '', occupation: '',
     birthday: '',
@@ -1384,7 +1384,7 @@ function matchCategory(raw) {
 
 function convertCharaSheet(raw) {
   const inp = raw.inputs || {};
-  const id = Date.now().toString();
+  const id = Date.now().toString() + '_' + Math.random().toString(36).slice(2, 9);
   const n = (v) => { const x = parseInt(v); return isNaN(x) ? '' : x; };
   const pow    = n(inp.pow);
   function calcDB(str, siz) {
