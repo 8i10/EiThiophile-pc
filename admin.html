@@ -491,9 +491,9 @@
     <div class="char-list" id="charList"></div>
     <button class="btn-new" onclick="createNew()">＋ 新しい探索者を追加</button>
     <button class="btn-new" style="background:rgba(100,160,200,0.1);border-color:#6ab0d4;color:#6ab0d4;margin-top:0.25rem" onclick="document.getElementById('importFileInput').click()">
-      📥 キャラシJSONをインポート
+      📥 キャラシJSONをインポート（複数可）
     </button>
-    <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="handleImportFile(this)">
+    <input type="file" id="importFileInput" accept=".json" multiple style="display:none" onchange="handleImportFile(this)">
     <button class="btn" style="width:100%;margin-top:0.5rem;border-color:rgba(201,169,110,0.4);color:var(--accent)" onclick="openGhSettings()">
       ⚙ GitHub設定
     </button>
@@ -565,6 +565,14 @@
 
 <script>
 let characters = [];
+
+// カテゴリー一覧（画像の並び順）
+const CATEGORIES = [
+  '無所属(現代日本)','無所属(現代海外)','無所属(時代違いetc)',
+  '施設組','教会組','喫茶店組','考古学研究所組',
+  '凪・薙一族','四季組','四神組',
+  '極道「天神会」','中華マフィア「煌」','中華マフィア「蓮」'
+];
 let currentId = null;
 let sessions = [];
 
@@ -756,7 +764,7 @@ function createNew() {
     birthday: '',
     category: '',
     image: '', imagePos: '50% 20%', color: '#7c9bb5',
-    stats: { STR:'', CON:'', POW:'', DEX:'', APP:'', SIZ:'', INT:'', EDU:'', HP:'', MP:'', SAN:'', アイデア:'', 幸運:'', 知識:'', DB:'' },
+    stats: { STR:'', CON:'', POW:'', DEX:'', APP:'', SIZ:'', INT:'', EDU:'', DB:'' },
     profile: '', quote: '',
     sessions: [], status: '生存'
   };
@@ -817,18 +825,12 @@ function renderForm(c) {
         <label>カテゴリー</label>
         <select id="f-category-select" onchange="onCategorySelect(this.value)">
           <option value="">-- 選択 --</option>
-          ${[
-            '施設組','教会組','考古学研究所・喫茶店組',
-            '凪・薙一族','四季一族','四神一族',
-            '極道「天神会」',
-            '中華マフィア「煌」','中華マフィア「蓮」',
-            'その他(現代)','その他(海外)','その他(他時代等)'
-          ].map(v=>`<option value="${v}" ${(c.category||'')===v?'selected':''}>${v}</option>`).join('')}
-          <option value="__custom__" ${(c.category&&!['施設組','教会組','考古学研究所・喫茶店組','凪・薙一族','四季一族','四神一族','極道「天神会」','中華マフィア「煌」','中華マフィア「蓮」','その他(現代)','その他(海外)','その他(他時代等)'].includes(c.category)&&c.category!=='')?'selected':''}>入力して追加…</option>
+          ${CATEGORIES.map(v=>`<option value="${v}" ${(c.category||'')===v?'selected':''}>${v}</option>`).join('')}
+          <option value="__custom__" ${(c.category&&!CATEGORIES.includes(c.category)&&c.category!=='')?'selected':''}>入力して追加…</option>
         </select>
         <input id="f-category" value="${esc(c.category||'')}"
           placeholder="カテゴリー名を入力"
-          style="margin-top:0.35rem;display:${(c.category&&!['施設組','教会組','考古学研究所・喫茶店組','凪・薙一族','四季一族','四神一族','極道「天神会」','中華マフィア「煌」','中華マフィア「蓮」','その他(現代)','その他(海外)','その他(他時代等)'].includes(c.category))?'block':'none'}">
+          style="margin-top:0.35rem;display:${(c.category&&!CATEGORIES.includes(c.category))?'block':'none'}">
       </div>
       <div class="form-group">
         <label>ステータス</label>
@@ -884,10 +886,6 @@ function renderForm(c) {
         <label>自己紹介・背景</label>
         <textarea id="f-profile" rows="4">${esc(c.profile)}</textarea>
       </div>
-      <div class="form-group full">
-        <label>口癖・名言</label>
-        <input id="f-quote" value="${esc(c.quote)}">
-      </div>
 
       <div class="section-divider">ステータス（六版）</div>
 
@@ -897,16 +895,6 @@ function renderForm(c) {
           <div class="stat-input-group">
             <label>${stat}</label>
             <input id="stat-${stat}" type="number" min="1" max="99" value="${c.stats?.[stat] ?? ''}">
-          </div>
-        `).join('')}
-      </div>
-
-      <div class="stats-group-label" style="grid-column:1/-1;font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;margin-top:0.75rem;margin-bottom:-0.25rem">二次ステータス</div>
-      <div class="stats-grid stats-grid-6">
-        ${['HP','MP','SAN','アイデア','幸運','知識'].map(stat => `
-          <div class="stat-input-group">
-            <label>${stat}</label>
-            <input id="stat-${stat}" type="number" min="0" max="99" value="${c.stats?.[stat] ?? ''}">
           </div>
         `).join('')}
       </div>
@@ -1228,10 +1216,9 @@ function collectFormData() {
   c.image      = document.getElementById('f-image').value.trim();
   // imagePos はsetImagePos()で直接characters[]に書き込み済みのためここでは維持
   c.profile    = document.getElementById('f-profile').value.trim();
-  c.quote      = document.getElementById('f-quote').value.trim();
   c.sessions   = [...sessions];
   c.stats = {};
-  ['STR','CON','POW','DEX','APP','SIZ','INT','EDU','HP','MP','SAN','アイデア','幸運','知識'].forEach(stat => {
+  ['STR','CON','POW','DEX','APP','SIZ','INT','EDU'].forEach(stat => {
     const el = document.getElementById('stat-' + stat);
     if (el) c.stats[stat] = el.value === '' ? '' : (parseInt(el.value) || '');
   });
@@ -1320,25 +1307,46 @@ function removeTrait(i) {
 
 init();
 
-// ── インポート ──
+// ── インポート（複数ファイル一括対応）──
 function handleImportFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const raw = JSON.parse(e.target.result);
-      const c = convertCharaSheet(raw);
-      characters.push(c);
-      currentId = c.id;
-      renderSidebar();
-      renderForm(c);
-      showToast('インポートしました ✓');
-    } catch (err) {
-      alert('JSONの読み込みに失敗しました。\n' + err.message);
-    }
-  };
-  reader.readAsText(file);
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+
+  let successCount = 0;
+  let failCount = 0;
+  let lastChar = null;
+  let processed = 0;
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const raw = JSON.parse(e.target.result);
+        const c = convertCharaSheet(raw);
+        // 同名PCの重複チェック（任意でスキップせず追加）
+        characters.push(c);
+        lastChar = c;
+        successCount++;
+      } catch (err) {
+        failCount++;
+        console.error('インポート失敗:', file.name, err);
+      }
+      processed++;
+      // 全ファイル処理完了時
+      if (processed === files.length) {
+        renderSidebar();
+        if (lastChar) {
+          currentId = lastChar.id;
+          renderForm(lastChar);
+        }
+        let msg = `${successCount}件インポートしました ✓`;
+        if (failCount) msg += `（${failCount}件失敗）`;
+        showToast(msg, failCount > 0);
+      }
+    };
+    reader.readAsText(file);
+  });
+
   input.value = '';
 }
 
@@ -1356,13 +1364,7 @@ function convertCharaSheet(raw) {
   const inp = raw.inputs || {};
   const id = Date.now().toString();
   const n = (v) => { const x = parseInt(v); return isNaN(x) ? '' : x; };
-  const sanNow = n(inp.san_now);
   const pow    = n(inp.pow);
-  const hp     = inp.hp_t ? n(inp.hp_t) : (inp.con && inp.siz ? Math.floor((n(inp.con) + n(inp.siz)) / 2) : '');
-  const mp     = inp.mp_t ? n(inp.mp_t) : (pow !== '' ? pow : '');
-  const idea   = inp.idea_t ? n(inp.idea_t) : (n(inp.int_v) !== '' ? n(inp.int_v) * 5 : '');
-  const luck   = inp.luck_t ? n(inp.luck_t) : (pow !== '' ? pow * 5 : '');
-  const know   = inp.know_t ? n(inp.know_t) : (n(inp.edu) !== '' ? n(inp.edu) * 5 : '');
   function calcDB(str, siz) {
     const total = (parseInt(str)||0) + (parseInt(siz)||0);
     if (total <= 12) return '-1d6';
@@ -1396,12 +1398,9 @@ function convertCharaSheet(raw) {
       STR: n(inp.str), CON: n(inp.con), POW: pow,
       DEX: n(inp.dex), APP: n(inp.app), SIZ: n(inp.siz),
       INT: n(inp.int_v), EDU: n(inp.edu),
-      HP: hp, MP: mp,
-      SAN: sanNow !== '' ? sanNow : (pow !== '' ? pow * 5 : ''),
-      アイデア: idea, 幸運: luck, 知識: know,
       DB: calcDB(inp.str, inp.siz),
     },
-    profile: profileBody, quote: '',
+    profile: profileBody,
     sessions, status,
     traits: convertTraits(raw),
   };

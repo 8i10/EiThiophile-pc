@@ -153,7 +153,6 @@
       <!-- プロフィール -->
       <div class="modal-section-title">プロフィール</div>
       <div class="modal-profile" id="modalProfile"></div>
-      <div class="modal-quote" id="modalQuote"></div>
       <!-- 特徴表 -->
       <div id="modalTraitsWrap"></div>
       <!-- 通過シナリオ -->
@@ -191,9 +190,20 @@ async function loadCharacters() {
   renderGrid();
 }
 
+const CATEGORY_ORDER = [
+  '無所属(現代日本)','無所属(現代海外)','無所属(時代違いetc)',
+  '施設組','教会組','喫茶店組','考古学研究所組',
+  '凪・薙一族','四季組','四神組',
+  '極道「天神会」','中華マフィア「煌」','中華マフィア「蓮」'
+];
+
 function renderFilters() {
   const ctrl = document.getElementById('controls');
-  const cats = ['all', ...new Set(characters.map(c => c.category).filter(Boolean))];
+  const used = new Set(characters.map(c => c.category).filter(Boolean));
+  // 定義順に並べ、定義外のカテゴリーは末尾に追加
+  const ordered = CATEGORY_ORDER.filter(c => used.has(c));
+  const extra = [...used].filter(c => !CATEGORY_ORDER.includes(c));
+  const cats = ['all', ...ordered, ...extra];
   const catBtns = cats.map(s =>
     `<button class="filter-btn ${s===activeCat?'active':''}" onclick="setCat('${s.replace(/'/g,"\\'")}')">
       ${s==='all'?'すべて':s}</button>`).join('');
@@ -222,7 +232,7 @@ function renderGrid() {
   );
 
   document.getElementById('grid').innerHTML = filtered.map((c, i) => {
-    const cardLine = c.quote || (c.sessions&&c.sessions[0]) || '';
+    const cardLine = (c.sessions&&c.sessions[0]) || '';
     const pos = c.imagePos || '50% 20%';
     const [ox, oy] = pos.split(' ');
     const sc = c.imageScale || 1.0;
@@ -255,10 +265,6 @@ function openModal(id) {
   document.getElementById('modalName').textContent = c.name || '';
   document.getElementById('modalProfile').textContent = c.profile || '';
 
-  const qEl = document.getElementById('modalQuote');
-  qEl.textContent = c.quote || '';
-  qEl.style.display = c.quote ? '' : 'none';
-
   document.getElementById('modalMeta').innerHTML = `
     ${c.age?`<span>年齢<strong>${c.age}歳</strong></span>`:''}
     ${c.occupation?`<span>職業<strong>${c.occupation}</strong></span>`:''}
@@ -275,19 +281,12 @@ function openModal(id) {
   // ステータス（右パネル内）
   const statsInline = document.getElementById('modalStatsInline');
   const primary   = ['STR','CON','POW','DEX','APP','SIZ','INT','EDU'];
-  const secondary = ['HP','MP','SAN','アイデア','幸運','知識'];
   const hasAny = keys => c.stats && keys.some(k => c.stats[k]!==''&&c.stats[k]!=null);
   if (c.stats && Object.keys(c.stats).some(k=>c.stats[k]!==''&&c.stats[k]!=null)) {
     let html='';
     if (hasAny(primary)) {
       html+=`<div class="stats-block-label">基本能力値</div><div class="stats-row">`+
         primary.filter(k=>c.stats[k]!==''&&c.stats[k]!=null).map(k=>
-          `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
-        ).join('')+`</div>`;
-    }
-    if (hasAny(secondary)) {
-      html+=`<div class="stats-block-label" style="margin-top:0.5rem">二次ステータス</div><div class="stats-row-3">`+
-        secondary.filter(k=>c.stats[k]!==''&&c.stats[k]!=null).map(k=>
           `<div class="stat-item"><div class="stat-label">${k}</div><div class="stat-val">${c.stats[k]}</div></div>`
         ).join('')+`</div>`;
     }
