@@ -1351,6 +1351,18 @@ function handleImportFile(input) {
 }
 
 function convertTraits(raw) {
+  // feature_labels形式: ["（1-3）素早い", "（3-4）戦士"] → {dice, text}に分割
+  if (Array.isArray(raw.feature_labels) && raw.feature_labels.length) {
+    return raw.feature_labels.map(label => {
+      const s = String(label).trim();
+      // 先頭の（...）or (...) をダイス目として抽出
+      const m = s.match(/^[（(]\s*([^）)]*)\s*[）)]\s*(.*)$/);
+      if (m) {
+        return { dice: m[1].trim(), text: m[2].trim() };
+      }
+      return { dice: '', text: s };
+    }).filter(r => r.dice || r.text);
+  }
   // いあきゃら形式: raw.table が [{dice, content}] or [{num, text}] 等
   const src = raw.table || raw.traits || raw.feature_table || [];
   if (!Array.isArray(src) || !src.length) return [];
@@ -1358,6 +1370,16 @@ function convertTraits(raw) {
     dice: String(row.dice || row.num || row.roll || ''),
     text: String(row.content || row.text || row.feature || row.value || '')
   })).filter(r => r.dice || r.text);
+}
+
+// tags配列からCATEGORIESに一致するものを探す
+function matchCategory(raw) {
+  const tags = raw.tags || (raw.inputs && raw.inputs.tags) || [];
+  if (!Array.isArray(tags)) return '';
+  for (const tag of tags) {
+    if (CATEGORIES.includes(tag)) return tag;
+  }
+  return '';
 }
 
 function convertCharaSheet(raw) {
@@ -1389,11 +1411,23 @@ function convertCharaSheet(raw) {
   const status = inp.pc_status === 'dead' ? '死亡'
                : inp.pc_status === 'missing' ? '不明'
                : inp.pc_status === 'retire' ? '引退' : '生存';
+  // 画像URL（char_image_url 優先、なければ charImage）
+  const imageUrl = inp.char_image_url || inp.charImage || '';
+  // 画像の位置・スケール
+  const imagePos   = inp.charImagePos || '50% 20%';
+  const imageScale = (typeof inp.charImageScale === 'number' && inp.charImageScale > 0)
+    ? inp.charImageScale
+    : (inp.char_image_zoom ? (parseInt(inp.char_image_zoom) / 100) : 1.0);
+
   return {
     id,
     name: inp.pcname || '', furigana: inp.furigana || '',
     age: inp.age || '', birthday: inp.birthday || '', occupation: inp.job || '',
-    image: '', color: inp.txtcolor || '#7c9bb5',
+    category: matchCategory(raw),
+    image: imageUrl,
+    imagePos: imagePos,
+    imageScale: imageScale,
+    color: inp.txtcolor || '#7c9bb5',
     stats: {
       STR: n(inp.str), CON: n(inp.con), POW: pow,
       DEX: n(inp.dex), APP: n(inp.app), SIZ: n(inp.siz),
