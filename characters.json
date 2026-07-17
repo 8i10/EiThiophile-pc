@@ -280,8 +280,8 @@
     "occupation": "魔法使い",
     "category": "無所属(時代違いetc)",
     "image": "https://www.dropbox.com/scl/fi/c49ikelk42mql6qo54ynx/1.png?rlkey=s8qn2zrgltms5vku2gaisj5m0&dl=0",
-    "imagePos": "28% 1%",
-    "imageScale": 2.79,
+    "imagePos": "30% 2%",
+    "imageScale": 3,
     "color": "#ffc107",
     "stats": {
       "STR": 12,
