@@ -349,5 +349,248 @@
         "text": "芸銃的才能"
       }
     ]
+  },
+  {
+    "id": "1784291333027_w93cvc2",
+    "name": "シャルナィム・ケスティル",
+    "furigana": "",
+    "age": "32",
+    "birthday": "",
+    "occupation": "在宅ワーカー",
+    "category": "",
+    "image": "https://www.dropbox.com/scl/fi/56mrpgblezbr9111qhqyp/.png?rlkey=3jszrqfuootgn3fldyy99pl7b&dl=0",
+    "imagePos": "51% 4%",
+    "imageScale": 3.55,
+    "color": "#ece9e6",
+    "stats": {
+      "STR": 11,
+      "CON": 12,
+      "POW": 13,
+      "DEX": 13,
+      "APP": 14,
+      "SIZ": 13,
+      "INT": 15,
+      "EDU": 15,
+      "DB": "0"
+    },
+    "profile": "先天性アルビノ。\n日光に弱いので、在宅で出来る仕事をしている。",
+    "sessions": [
+      "エゴイズムの天秤(KPC)",
+      "巡り廻りて(KPC)",
+      "スーサイデッドメアリンク(KPC)",
+      "リンクヴェルトゲンガー(KPC)",
+      "確信的イナモラメント(KPC)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "2-9",
+        "text": "バイリンガル"
+      },
+      {
+        "dice": "1-4",
+        "text": "オシャレ"
+      }
+    ]
+  },
+  {
+    "id": "1784291333028_b0if9rn",
+    "name": "カトレア",
+    "furigana": "",
+    "age": "1080",
+    "birthday": "",
+    "occupation": "魔法使い",
+    "category": "無所属(時代違いetc)",
+    "image": "https://www.dropbox.com/scl/fi/r02vqx3qw1pcq4ote59yd/0.png?rlkey=90gjfs7m1v05swbuv7fzxa3ac&dl=0",
+    "imagePos": "39% 2%",
+    "imageScale": 3.65,
+    "color": "#7eaf32",
+    "stats": {
+      "STR": 12,
+      "CON": 10,
+      "POW": 18,
+      "DEX": 13,
+      "APP": 14,
+      "SIZ": 13,
+      "INT": 17,
+      "EDU": 18,
+      "DB": "+1d4"
+    },
+    "profile": "",
+    "sessions": [
+      "1000年の戀(KPC)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "2-8",
+        "text": "芸銃的才能"
+      },
+      {
+        "dice": "5-1",
+        "text": "動物に好かれる"
+      }
+    ]
+  },
+  {
+    "id": "1784291333028_grzgpak",
+    "name": "エストレージャ・フィーア",
+    "furigana": "Estrella・Vier",
+    "age": "28",
+    "birthday": "",
+    "occupation": "情報屋(ハッカー)",
+    "category": "喫茶店組",
+    "image": "https://www.dropbox.com/scl/fi/zf7od0wdty48b209wacd5/0000.png?rlkey=fn5x1087wfxlkklld1jsx1qfn&dl=0",
+    "imagePos": "39% 27%",
+    "imageScale": 1.25,
+    "color": "#29fff1",
+    "stats": {
+      "STR": 9,
+      "CON": 16,
+      "POW": 17,
+      "DEX": 12,
+      "APP": 17,
+      "SIZ": 13,
+      "INT": 17,
+      "EDU": 20,
+      "DB": "0"
+    },
+    "profile": "愛称はエスト。\n実名は「フィーア・エストレージャ」\n名前を逆にして名乗っている。\n親しい人にだけ「フィーア」と呼んでもらっている。\n\n実は元刑事。\nなんでかアウトローの道に踏みこんで情報屋をやっている。\n\n10年前、義理の兄と実の兄と一緒に日本に移住して来た。",
+    "sessions": [
+      "銀の弾丸はない",
+      "よるのうみとカンツォーネ",
+      "きせつはずれアクアリウム",
+      "（犀片）",
+      "（シメンソカ(KPC)）",
+      "果てにてカフネ(KPC)",
+      "Grenadine Raisond'etre(KPC)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "2-9",
+        "text": "バイリンガル"
+      },
+      {
+        "dice": "2-10",
+        "text": "前職"
+      }
+    ]
+  },
+  {
+    "id": "1784291333029_u3yd2ys",
+    "name": "ストレイハーツ",
+    "furigana": "（6-5）急所を見抜く",
+    "age": "37",
+    "birthday": "？",
+    "occupation": "看守",
+    "category": "無所属(現代海外)",
+    "image": "https://www.dropbox.com/scl/fi/bqgfnomhhjumdpd8p3by8/1.png?rlkey=kskhtdndoonb86i2d2szzvb0v&dl=0",
+    "imagePos": "81% 3%",
+    "imageScale": 4.39,
+    "color": "#000000",
+    "stats": {
+      "STR": 16,
+      "CON": 15,
+      "POW": 14,
+      "DEX": 17,
+      "APP": 11,
+      "SIZ": 14,
+      "INT": 16,
+      "EDU": 20,
+      "DB": "+1d4"
+    },
+    "profile": "10年間最深部で一人、看守を務めている。\n拷問は行わないが、至極口が悪い上に、愛煙家。\n煙草とライターと拳銃は常に持ち歩いている。\n\n家族は義母一人。\n孤児だったらしい。（問題あれば母一人でOK）",
+    "sessions": [
+      "腕すらなくとも(HO1)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "6-5",
+        "text": "急所を見抜く"
+      },
+      {
+        "dice": "3-7",
+        "text": "俊敏"
+      }
+    ]
+  },
+  {
+    "id": "1784291333030_ifen1tj",
+    "name": "シルク・コーデュロイ",
+    "furigana": "Sillc・Corduroy",
+    "age": "39",
+    "birthday": "",
+    "occupation": "マフィア",
+    "category": "無所属(現代海外)",
+    "image": "https://www.dropbox.com/scl/fi/pjgifzjcm0a63zy45cqh2/02.png?rlkey=srmbu7mhjy6q4x6h0kxhkbu0h&dl=0",
+    "imagePos": "47% 2%",
+    "imageScale": 4,
+    "color": "#cbafb6",
+    "stats": {
+      "STR": 10,
+      "CON": 10,
+      "POW": 16,
+      "DEX": 18,
+      "APP": 15,
+      "SIZ": 13,
+      "INT": 18,
+      "EDU": 20,
+      "DB": "0"
+    },
+    "profile": "ロシア名：шёлк(シォールク)\n(どっちにしても)愛称はルーク。\n表向きは医学教授。外科と精神科専攻。\n変わり者で皆が避けて行くので、あまり人と関わらない。\n色んな知識を頭に記録する所謂天才で、抜け目のない性格。\n寡黙で無愛想で面倒臭がり。\n必要最低限の会話しかしてくれないし、身の回りのことも部下に任せることがほぼ。\nとりあえず面倒くさいことは嫌いなので手っ取り早く事を進めたい。\n分析と言うよりは頭が回る、というタイプで本人は考える、という認識は一切ない。\n敵に回すとめんどくさいタイプ。\nフルーツカービングは何となく始めた趣味。\nことを早く進めるなら人の肌を飾るのも厭わないし、なんなら面倒くさくなったら刺す。\n\n・これは本人も知らないが、出身はノルウェー。\n10代前半の頃、各国の親戚を盥回しにされ、最終的に捨て子としてロシアに流れて来た。\nそこをファミリーに拾われて、戦闘員から徐々に上に昇りつめた。",
+    "sessions": [
+      "狼を養うは脚(HO4)",
+      "不運で幸運な君と歩く(KPC)",
+      "Bullet in Your Heart(KPC)",
+      "エゴイズムの天秤(KPC)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "3-7",
+        "text": "俊敏"
+      },
+      {
+        "dice": "4-3",
+        "text": "異性が苦手（D)"
+      }
+    ]
+  },
+  {
+    "id": "1784291333030_iakvb7z",
+    "name": "スパーディア",
+    "furigana": "（3-7）俊敏",
+    "age": "",
+    "birthday": "",
+    "occupation": "",
+    "category": "無所属(時代違いetc)",
+    "image": "https://www.dropbox.com/scl/fi/y8pv193cs2hp375crec2w/.png?rlkey=akgvawos6lnm44kd2228caua1&dl=0",
+    "imagePos": "51% 2%",
+    "imageScale": 4.32,
+    "color": "#607d8b",
+    "stats": {
+      "STR": 12,
+      "CON": 14,
+      "POW": 16,
+      "DEX": 15,
+      "APP": 14,
+      "SIZ": 13,
+      "INT": 16,
+      "EDU": 19,
+      "DB": "+1d4"
+    },
+    "profile": "名前は忘れてしまってもいいように大切に持ち歩いている。\nやや天然だが、唯一の生き残りとして滅びゆく世界に抗っている。\nそれが自分が生き残った「意味」であると信じている。\n\n己の過去に執着してもいつかまた失くしてしまう可能性があるから意味はないと思っている――が、それはそれとして思い出せる事があるなら全て思い出しておきたい。\n思い出すことが出来たなら、全て記録して、またいつでも思い出せるようにしなくては。\n\n・HO1にとっての正義とは何か\n「唯一の生き残りとして滅びゆく世界に抗うこと」\nかつて自分以外の人間も生きていた世界が残っていれば、やり直すことだって出来るはずだから。\n自身が戦うことが出来ればよかったのに――、そう思う事は幾度もあっただろう。\nきっと今回も、そう思うのだろう。\n\n・HO1にとって生死観とは何か\n大切なブキの命と引き換えに生き返っていることに罪悪感がないわけではない。\nしかし、その大切だったブキの事さえも忘れてしまうなら、引きずっても仕方がないと思っている。\nテキを滅ぼさなければ世界が失われてしまう。\nそのために必要な事ならば、全てを切り捨てたっていい。自分の感情さえも。",
+    "sessions": [
+      "運命を殺しにきた(HO1)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "3-7",
+        "text": "俊敏"
+      }
+    ]
   }
 ]
