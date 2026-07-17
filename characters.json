@@ -441,8 +441,8 @@
     "occupation": "情報屋(ハッカー)",
     "category": "喫茶店組",
     "image": "https://www.dropbox.com/scl/fi/zf7od0wdty48b209wacd5/0000.png?rlkey=fn5x1087wfxlkklld1jsx1qfn&dl=0",
-    "imagePos": "39% 27%",
-    "imageScale": 1.25,
+    "imagePos": "50% 50%",
+    "imageScale": 0.9,
     "color": "#29fff1",
     "stats": {
       "STR": 9,
