@@ -271,10 +271,6 @@ function renderGrid() {
       <div class="card-body">
         ${c.furigana?`<div class="card-furigana">${c.furigana}</div>`:''}
         <div class="card-name">${c.name||'（名前なし）'}</div>
-        <div class="card-meta">
-          ${c.age?`<span>${c.age}歳</span>`:''}
-          ${c.occupation?`<span>${c.occupation}</span>`:''}
-        </div>
         ${cardLine?`<div class="card-quote">${cardLine}</div>`:''}
       </div>
     </div>`;
@@ -375,7 +371,7 @@ loadCharacters();
   var REPO   = "8i10/kp-scenario";
   var BRANCH = "main";
   var JSON_URL = "https://raw.githubusercontent.com/"+REPO+"/"+BRANCH+"/profile.json";
-  var HOME = "index.html";
+  var HOME = "https://8i10.github.io/kp-scenario/index.html";
   var EDIT = new URLSearchParams(location.search).get("edit") === "1";
   var SELF = (location.pathname.split("/").pop() || "index.html").toLowerCase();
 
@@ -395,14 +391,20 @@ loadCharacters();
     if(w && !w.contains(e.target)) closeMenu();
   });
 
+  var BASE = "https://8i10.github.io/kp-scenario/";
+  function resolve(u){
+    if(!u) return u;
+    if(/^https?:\/\//i.test(u)) return u;   // 既に絶対URL
+    return BASE + u.replace(/^\.?\//, "");   // 相対URL → kp-scenario基準
+  }
   function majorHref(m){
-    if(m.url) return withEdit(m.url);
+    if(m.url) return withEdit(resolve(m.url));
     var ps = m.pages || [];
-    if(ps.length && ps.every(function(p){ return !!p.url; })) return withEdit(ps[0].url);
+    if(ps.length && ps.every(function(p){ return !!p.url; })) return withEdit(resolve(ps[0].url));
     return withEdit(HOME + "?major=" + encodeURIComponent(m.id || ""));
   }
   function pageHref(m, p){
-    if(p.url) return withEdit(p.url);
+    if(p.url) return withEdit(resolve(p.url));
     return withEdit(HOME + "?major=" + encodeURIComponent(m.id || "") + "&page=" + encodeURIComponent(p.id || ""));
   }
 
