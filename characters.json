@@ -1154,5 +1154,596 @@
         "text": "採用不可"
       }
     ]
+  },
+  {
+    "id": "1784388891576_e4523tc",
+    "name": "逢見　真宵",
+    "furigana": "おうみ　まよい",
+    "age": "26",
+    "birthday": "",
+    "occupation": "放浪者",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/doohb472dgteil7si9nv8/0.png?rlkey=kjddsh1xcciru886oigycs50z&dl=0",
+    "imagePos": "63% 2%",
+    "imageScale": 2.65,
+    "color": "#f8f8f8",
+    "stats": {
+      "STR": 12,
+      "CON": 13,
+      "POW": 15,
+      "DEX": 18,
+      "APP": 12,
+      "SIZ": 13,
+      "INT": 17,
+      "EDU": 20,
+      "DB": "+1d4"
+    },
+    "profile": "一人称：俺\n\n両性具有。\n更に尻尾に蛇が付いている。\n蛇は別で意思を持っているが、感覚は真宵のもの。\n蛇人間…とはまた別の関係かもしれない。",
+    "sessions": [
+      "■色の桜が■■刻。(KPC)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "3-7",
+        "text": "俊敏"
+      },
+      {
+        "dice": "4-9",
+        "text": "暗黒の祖先(D)"
+      }
+    ]
+  },
+  {
+    "id": "1784388891576_8bnw79z",
+    "name": "一色　紅緋",
+    "furigana": "いっしき　こうひ",
+    "age": "25",
+    "birthday": "",
+    "occupation": "メンタルセラピスト",
+    "category": "施設組",
+    "image": "",
+    "imagePos": "50% 30%",
+    "imageScale": 1.3,
+    "color": "#000000",
+    "stats": {
+      "STR": 15,
+      "CON": 8,
+      "POW": 13,
+      "DEX": 13,
+      "APP": 14,
+      "SIZ": 13,
+      "INT": 17,
+      "EDU": 15,
+      "DB": "+1d4"
+    },
+    "profile": "とある街で個人経営のメンタルクリニックを開いているカウンセラー。\nsiz13だけどそれは全長。ブーツぬきで160cmの男性。\n職業病なのか世話焼きで困ってる人とか心配な人を放っておけないタイプ。\n幼馴染の兄弟がおり、実の兄弟の様に仲がいい。",
+    "sessions": [
+      "『初めまして、愛しています。』(KPC)",
+      "Rainy Re:RmembeR(KPC)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "1-5",
+        "text": "天才"
+      },
+      {
+        "dice": "3-7",
+        "text": "俊敏"
+      }
+    ]
+  },
+  {
+    "id": "1784388891577_k10mx31",
+    "name": "烏玉　四片",
+    "furigana": "ぬばたま　よひら",
+    "age": "22",
+    "birthday": "",
+    "occupation": "？",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/x4f5k1lxn3pu1jiw109bq/2.png?rlkey=pvskvr64olmuhscphl3xwnbs4&dl=0",
+    "imagePos": "48% 5%",
+    "imageScale": 2.84,
+    "color": "#000000",
+    "stats": {
+      "STR": 12,
+      "CON": 13,
+      "POW": 13,
+      "DEX": 15,
+      "APP": 14,
+      "SIZ": 14,
+      "INT": 16,
+      "EDU": 16,
+      "DB": "+1d4"
+    },
+    "profile": "旦那限界オタク。",
+    "sessions": [
+      "きみのための殺人計画"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "1-7",
+        "text": "勉強家"
+      },
+      {
+        "dice": "6-6",
+        "text": "急速な回復力"
+      }
+    ]
+  },
+  {
+    "id": "1784388891577_gm8nqa0",
+    "name": "夏木　彩都",
+    "furigana": "なつき　あやと",
+    "age": "16",
+    "birthday": "",
+    "occupation": "高校1年生",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/913irf0pknosmp0096xuk/.png?rlkey=zairvplpuup6609z80zskygg5&dl=0",
+    "imagePos": "49% 2%",
+    "imageScale": 2.99,
+    "color": "#b9d1f0",
+    "stats": {
+      "STR": 12,
+      "CON": 13,
+      "POW": 16,
+      "DEX": 15,
+      "APP": 17,
+      "SIZ": 13,
+      "INT": 18,
+      "EDU": 10,
+      "DB": "+1d4"
+    },
+    "profile": "・治癒\n・支配",
+    "sessions": [
+      "Pharanoidollia(KPC)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "2-5",
+        "text": "鋭い洞察力"
+      },
+      {
+        "dice": "3-7",
+        "text": "俊敏"
+      }
+    ]
+  },
+  {
+    "id": "1784388891577_cdxylw8",
+    "name": "葛禰　葛葉",
+    "furigana": "かずらね　くずは",
+    "age": "31",
+    "birthday": "",
+    "occupation": "科学者",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/s7rw50keakf5uqh6gisk7/0-1.png?rlkey=xrlbcuf71cwz2vy81dh0dy7gj&dl=0",
+    "imagePos": "59% 6%",
+    "imageScale": 3.29,
+    "color": "#000000",
+    "stats": {
+      "STR": 6,
+      "CON": 16,
+      "POW": 17,
+      "DEX": 15,
+      "APP": 12,
+      "SIZ": 13,
+      "INT": 18,
+      "EDU": 18,
+      "DB": "0"
+    },
+    "profile": "不器用負けず嫌いの男。\n後口が悪い。\n典型的な技術者って感じの男。\n\n食事はカロリーメイトなど。\n食事は人間生活で3番目に嫌い。\n\n・ド甘党（コーヒーは砂糖10個とミルク半分）\n・ココアはスプーン5杯とミルク1/3\nちゃんと味見して飲む。",
+    "sessions": [
+      "鶺鴒、浦々と鳴き(HO2)",
+      "満ち潮にレゴリス",
+      "シキラレ■■(KPレス)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "5-3",
+        "text": "失敗は発明の母"
+      },
+      {
+        "dice": "6-7",
+        "text": "不屈の精神力"
+      }
+    ]
+  },
+  {
+    "id": "1784388891577_zuevj62",
+    "name": "月夜見　鏡",
+    "furigana": "つくよみ　きょう",
+    "age": "41",
+    "birthday": "",
+    "occupation": "天文学教授",
+    "category": "極道「天神会」",
+    "image": "https://www.dropbox.com/scl/fi/ev5jeqr1bmeyovjx9bz5x/npc.png?rlkey=5kq61ylzwtqqiz0b6ofl06flb&dl=0",
+    "imagePos": "45% 3%",
+    "imageScale": 2.15,
+    "color": "#1c305c",
+    "stats": {
+      "STR": 14,
+      "CON": 12,
+      "POW": 14,
+      "DEX": 16,
+      "APP": 14,
+      "SIZ": 13,
+      "INT": 18,
+      "EDU": 21,
+      "DB": "+1d4"
+    },
+    "profile": "月夜見家の長男。\n「優秀」な人間しか生まれていない家庭で、長男として生まれたはずの自分が平凡であることが許せなくて手術を受けた。\nその代償が「無意識のうちの殺人」であるのならば、それは受け入れるべきものだと思っている。\n\n日本刀は家にある。",
+    "sessions": [
+      "お前のせいだよ(HO天才教授)",
+      "遺海址紀"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "1-5",
+        "text": "天才"
+      },
+      {
+        "dice": "4-4",
+        "text": "動物に嫌われる(D)"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_ux7koyn",
+    "name": "玄浄　遠江",
+    "furigana": "げんじょう　とうみ",
+    "age": "25",
+    "birthday": "",
+    "occupation": "陰陽師",
+    "category": "四神組",
+    "image": "https://www.dropbox.com/scl/fi/u7s0jjqad1ucnujpds2n9/0.png?rlkey=zbxqu3n3wniqsw503z2zcdm0a&dl=0",
+    "imagePos": "58% 3%",
+    "imageScale": 4.6,
+    "color": "#000000",
+    "stats": {
+      "STR": 16,
+      "CON": 15,
+      "POW": 18,
+      "DEX": 15,
+      "APP": 5,
+      "SIZ": 13,
+      "INT": 17,
+      "EDU": 16,
+      "DB": "+1d4"
+    },
+    "profile": "出先で火事に巻き込まれたものの、生還した男。\n代償に見た目がボロボロになってしまったので、誰も寄り付かない所で泪と出会う。\n少し卑屈になっていたところを心から救われ、現在は夫婦として過ごしている。\n\n比較的穏やかで明るい男。\nのんびり屋さんかと思いきや、割とそうでもない。",
+    "sessions": [
+      "災異神　夙夜典界(HO玄武)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "4-8",
+        "text": "大切なもの(D)"
+      },
+      {
+        "dice": "3-7",
+        "text": "俊敏"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_c5x1fcb",
+    "name": "月夜見　神國",
+    "furigana": "つくよみ　みくに",
+    "age": "32",
+    "birthday": "",
+    "occupation": "極道",
+    "category": "極道「天神会」",
+    "image": "https://www.dropbox.com/scl/fi/vqih201ptiwavmzp8ejgs/npc.png?rlkey=80wh59gfzlwccekxbvc684wjt&dl=0",
+    "imagePos": "42% 12%",
+    "imageScale": 2.1999999999999997,
+    "color": "#28395f",
+    "stats": {
+      "STR": 12,
+      "CON": 14,
+      "POW": 18,
+      "DEX": 18,
+      "APP": 16,
+      "SIZ": 13,
+      "INT": 18,
+      "EDU": 21,
+      "DB": "+1d4"
+    },
+    "profile": "月夜見組若頭。\n銃火器の達人で、スナイパーとして時折暗殺に出ている。\n\n兄と違って生まれながらの天才。\nブラコンで、兄の著書を暗記するほどにファン。\n\n普段はおっとりした性格だが、怒らせるとやばい。",
+    "sessions": [],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "1-5",
+        "text": "天才"
+      },
+      {
+        "dice": "3-5",
+        "text": "銃火器の達人"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_r7iyfsk",
+    "name": "玄浄　吉光",
+    "furigana": "げんじょう　よしみつ",
+    "age": "30",
+    "birthday": "",
+    "occupation": "殺し屋",
+    "category": "四神組",
+    "image": "https://www.dropbox.com/scl/fi/8oa5x5buf1rjlij2swlt5/0.png?rlkey=kuqnbbj0a5epmauf6iyrhd2qe&dl=0",
+    "imagePos": "46% 1%",
+    "imageScale": 3.699999999999999,
+    "color": "#454243",
+    "stats": {
+      "STR": 12,
+      "CON": 16,
+      "POW": 14,
+      "DEX": 18,
+      "APP": 15,
+      "SIZ": 14,
+      "INT": 16,
+      "EDU": 19,
+      "DB": "+1d4"
+    },
+    "profile": "刀の匠の名を与えられたが、日本刀を振るのは下手。\nグレて家出して気付いたら30になっていた。\nその過程で拳銃を手にし、殺し屋にもなっていた。\n不思議と拳銃は手に馴染むし、殺し屋は転職だった。\n殺し屋に売春に、裏世界でしか生きられない。\n殺し屋の名は「終（おわり）」\n\n死ぬのが怖い。殺すことに躊躇はないが、死ぬのは怖い。\nだから生き恥を晒してでも、醜く生きている。\n\n\n少しばかり劣等感がある。\n寡黙でクールな印象を受ける男。\n言いたいことはズバッというし、好意は上手く受け取れないし、この好意をどうしたらいいのかも上手くわかっていない。\nまず具に伝えたらいいんじゃないな（？）\n\nHO1のことは「好き」\nただ、この好きが本当に「LOVE」なのかわかっていない。\nしかし、いつもなら容赦なく殺すところを殺せていないことから、情が沸いてしまっているのは確か。\n→他人に確認されて、もしいなくなってしまったら？殺せる？と聞かれて「LOVE」だと気付いた。",
+    "sessions": [
+      "LoveLabyrinth(HO2)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "3-5",
+        "text": "銃火器の達人"
+      },
+      {
+        "dice": "4-3",
+        "text": "異性が苦手（D)"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_yqqtf2t",
+    "name": "紅掛　氷雨",
+    "furigana": "べにかけ　ひさめ",
+    "age": "27",
+    "birthday": "",
+    "occupation": "モデル",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/8d7b95ygwc6kw7x93ugyu/00-2.png?rlkey=o3fepbq57qzbyxnm00ylondbd&dl=0",
+    "imagePos": "50% 5%",
+    "imageScale": 4.28,
+    "color": "#00bcd4",
+    "stats": {
+      "STR": 15,
+      "CON": 17,
+      "POW": 13,
+      "DEX": 12,
+      "APP": 19,
+      "SIZ": 13,
+      "INT": 16,
+      "EDU": 19,
+      "DB": "+1d4"
+    },
+    "profile": "雑誌に引っ張りだこの有名モデル。芸名は「Hisame」\n実家の手伝いも手が空いた時にはしている。\n\n表向きは敬語で落ち着いた雰囲気の男性。\n本来は結構口が悪めなのを隠している。（怖がられたりで仕事に影響が出るから）\n\n顔がやたらいいので、仕事外は変装している。\nでもたまにバレる。\n\n【恋人NPCの名前　　　　　　　】須佐木　叶（すざき　かなえ）\n【探索者が住む土地の名前　　　】縹市（はなだ）\n【探索者の実家となる神社の名前】夜刀神社（やと-）",
+    "sessions": [
+      "おとなりさん"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "4-6",
+        "text": "寄せ餌(D)"
+      },
+      {
+        "dice": "1-4",
+        "text": "オシャレ"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_0w0y17j",
+    "name": "玄浄　長光",
+    "furigana": "げんじょう　ながみつ",
+    "age": "17",
+    "birthday": "",
+    "occupation": "高校生",
+    "category": "四神組",
+    "image": "https://www.dropbox.com/scl/fi/zudsvtilze850hg5wnj94/0.png?rlkey=golvvrzr3edk0qrms5xme31o5&dl=0",
+    "imagePos": "37% 4%",
+    "imageScale": 4.67,
+    "color": "#000000",
+    "stats": {
+      "STR": 15,
+      "CON": 13,
+      "POW": 17,
+      "DEX": 15,
+      "APP": 16,
+      "SIZ": 13,
+      "INT": 18,
+      "EDU": 11,
+      "DB": "+1d4"
+    },
+    "profile": "火傷してなかったらめっちゃ顔が良いってことなんだな………\n性格は平安と大して変わりがない。",
+    "sessions": [
+      "災異神　夙夜典界(HO玄武)",
+      "31FLOORs(KPレス)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "4-4",
+        "text": "動物に嫌われる(D)"
+      },
+      {
+        "dice": "1-8",
+        "text": "幸運のお守り"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_7l55v8h",
+    "name": "胡　煌雲",
+    "furigana": "フー　ファンユン／こううん",
+    "age": "46",
+    "birthday": "",
+    "occupation": "マフィア",
+    "category": "中華マフィア「煌」",
+    "image": "https://www.dropbox.com/scl/fi/zwk7hoixjir7r7kpde33x/.png?rlkey=h2l0ee9tb9z1o8s6j1gllouel&dl=0",
+    "imagePos": "49% 1%",
+    "imageScale": 4.35,
+    "color": "#000000",
+    "stats": {
+      "STR": 13,
+      "CON": 15,
+      "POW": 15,
+      "DEX": 17,
+      "APP": 16,
+      "SIZ": 14,
+      "INT": 18,
+      "EDU": 17,
+      "DB": "+1d4"
+    },
+    "profile": "シュブ＝ニグラスを親に持つ、暗黒の祖先のシュブ＝ニグラス狂信者。\n見た目は普通に美人の男性だが、身体機能は女性寄り。\n色んな子供の父であり、母である。\n\n貞操観念はお亡くなりになっている。\nシュブ＝ニグラスの狂信者だから当たり前かもしれない。\n本人曰く、中出しされている時が一番気持ちよくて好きなんだそう。\n\n中国のどこかに存在する花街を取り仕切るマフィアのボス。\n戸籍のない「子供」たちをファミリーとして迎えているため、そこそこ規模は大きい。\nファミリーと言ってもイタリアンマフィアやアメリカンマフィアに比べて、足を洗うのは自由、独り立ちは自由etc...\n規則は緩い。子が成長するのであればそれでいいという煌雲の方針である。\nただし、掟は最低限存在する。\n余談だが、シマの人間は食い尽くしている。\n\nよく日本に遊びに行くらしい。\n好きな場所は京都。",
+    "sessions": [
+      "スマホ"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "4-9",
+        "text": "暗黒の祖先(D)"
+      },
+      {
+        "dice": "1-5",
+        "text": "天才"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_7m639fh",
+    "name": "香染　楪",
+    "furigana": "こうぞめ　ゆずりは",
+    "age": "29",
+    "birthday": "",
+    "occupation": "記者",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/cim1lv3p6fmy6ylh88flx/10-2.png?rlkey=0d3mbregtwhhvlnvytosk84hy&dl=0",
+    "imagePos": "50% 0%",
+    "imageScale": 1.0499999999999998,
+    "color": "#a52a78",
+    "stats": {
+      "STR": 13,
+      "CON": 14,
+      "POW": 15,
+      "DEX": 18,
+      "APP": 10,
+      "SIZ": 13,
+      "INT": 17,
+      "EDU": 19,
+      "DB": "+1d4"
+    },
+    "profile": "俺か僕かはRPしてたら決まります。\n比較的毒舌で、正論で殴って来るタイプの男。\n\n超心理学者の傍ら、帝都新聞社でオカルト雑誌を書いている。\n専門知識から書かれる記事はオカルト好きには人気…なのかもしれない。\n本人は至って真面目に仕事をしているため、面白半分で話を振られるのはすごく苦手。\n\n出自は不明だが、顔に肌に蛇の鱗のようなものが見える。\n普段は服や髪の毛で隠している。\n\n▼暗黒の祖先98の余談\n・スプリットタン\n・顔の半分、体の1/3は蛇の鱗のようなものに覆われている。\n・生殖器は蛇と同一",
+    "sessions": [
+      "不眠怪異聞(HO3)",
+      "戦える者の輪舞曲",
+      "祓え一閃",
+      "sleep-walker(KPレス)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "2-10",
+        "text": "前職"
+      },
+      {
+        "dice": "4-9",
+        "text": "暗黒の祖先(D)"
+      }
+    ]
+  },
+  {
+    "id": "1784388891578_15q64e2",
+    "name": "香染　樗",
+    "furigana": "\t こうぞめ　おうち",
+    "age": "35",
+    "birthday": "",
+    "occupation": "外科医",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/8szpo29girny5p618c4dl/0.png?rlkey=kb4uqng0urrq66cit8jkplwqy&dl=0",
+    "imagePos": "52% 2%",
+    "imageScale": 5.4,
+    "color": "#8c004d",
+    "stats": {
+      "STR": 11,
+      "CON": 13,
+      "POW": 17,
+      "DEX": 15,
+      "APP": 15,
+      "SIZ": 14,
+      "INT": 17,
+      "EDU": 19,
+      "DB": "+1d4"
+    },
+    "profile": "・俺｜あんた、お前\n　患者さんとかに対してはちゃんと敬語が使える\n\n元不良。地域でまあ…不良なら名前くらい聞いたことある感じの奴だった（前職：キック）\nそんな過去のせいもあって普通に口が悪いし、食えない男でもある。\n人を殺したことはないし、病院送りにもしたこともないが、喧嘩がやたら強かった。\n本人曰く「過去の栄光」らしい。汚点ではない。\n\n唐突に医者を目指したのは、恐らく生まれの本能と、過去、樗が高校1年の時に空き巣に母親を殺されたから。\n父親は存命だが、母親を失ったショックで療養中。\n別に不幸な人生だとも思っていないし、運命を憎むとか、当人にとっては「しょうもない事」も考えていない。\n起きたならそれを受け止めて、前向いて生きるだけ。\nメンタルが強い。\n\n家に帰るのは基本週一回。\n無趣味なので貯蓄が大変な事になっている。\n\n・万年筆オタク\n仕事中も万年筆を使用している。",
+    "sessions": [
+      "人形縢牢"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "2-10",
+        "text": "前職"
+      },
+      {
+        "dice": "4-9",
+        "text": "暗黒の祖先(D)"
+      }
+    ]
+  },
+  {
+    "id": "1784388891579_bpd217g",
+    "name": "香染　櫻",
+    "furigana": "こうぞめ　よう",
+    "age": "31",
+    "birthday": "",
+    "occupation": "俳優",
+    "category": "無所属(現代日本)",
+    "image": "https://www.dropbox.com/scl/fi/exforvwvrt0nj9zrk1hyn/0koma.png?rlkey=x8qmf7gz80l5ckb1j395nsno2&st=9otuj5oh&dl=0",
+    "imagePos": "44% 28%",
+    "imageScale": 1.3,
+    "color": "#8c004d",
+    "stats": {
+      "STR": 8,
+      "CON": 14,
+      "POW": 16,
+      "DEX": 15,
+      "APP": 18,
+      "SIZ": 14,
+      "INT": 16,
+      "EDU": 18,
+      "DB": "0"
+    },
+    "profile": "すいません、名前これしかもう浮かばなくなっちゃったので許してください。\n・香吹＝カフカ　香水を吹かせる\n・李桜＝（エ）リオ　「脚本」\n\n本名は「香染　櫻（こうぞめ-よう）」\n「香吹　李桜（かふか-りお）」は芸名、もしくは役名。\n\n男版カフカしかない！これは！！と思ってこうなりました。\n一人称は僕か俺で悩んでいますが、RPしたら決まります。\n恐らく演技していない時はかなりまともな男。\n\n妖艶なお兄さん。\nAPP19なので、人に避けられる人生を送っているが、その見た目でしか出来ない役をこれまでやって来た。\n性格は全然めげないしょげない気にしない、図太い性格をしている。\n顔を恨んだこともなければ、周りからの言葉も気にしたこともない。\n図太い性格をしている。（二回目）",
+    "sessions": [
+      "あやまたず、催花雨(HO調香師)"
+    ],
+    "status": "生存",
+    "traits": [
+      {
+        "dice": "2-5",
+        "text": "鋭い洞察力"
+      },
+      {
+        "dice": "4-9",
+        "text": "暗黒の祖先(D)"
+      }
+    ]
   }
 ]
