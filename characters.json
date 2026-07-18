@@ -1362,8 +1362,8 @@
     "occupation": "天文学教授",
     "category": "極道「天神会」",
     "image": "https://www.dropbox.com/scl/fi/ev5jeqr1bmeyovjx9bz5x/npc.png?rlkey=5kq61ylzwtqqiz0b6ofl06flb&dl=0",
-    "imagePos": "45% 3%",
-    "imageScale": 2.15,
+    "imagePos": "43% 2%",
+    "imageScale": 1.6,
     "color": "#1c305c",
     "stats": {
       "STR": 14,
