@@ -1635,8 +1635,8 @@
     "occupation": "記者",
     "category": "無所属(現代日本)",
     "image": "https://www.dropbox.com/scl/fi/cim1lv3p6fmy6ylh88flx/10-2.png?rlkey=0d3mbregtwhhvlnvytosk84hy&dl=0",
-    "imagePos": "50% 0%",
-    "imageScale": 1.0499999999999998,
+    "imagePos": "50% 50%",
+    "imageScale": 1,
     "color": "#a52a78",
     "stats": {
       "STR": 13,
