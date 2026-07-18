@@ -246,7 +246,7 @@
   /* ドラッグクロップ */
   .crop-wrap {
     position: relative;
-    width: 200px; height: 260px;
+    width: 240px; height: 240px;
     background: var(--surface2);
     border: 1px solid var(--border);
     overflow: hidden;
@@ -857,7 +857,7 @@ function renderForm(c) {
           </div>
           <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.5rem;">
             <span style="font-size:0.6rem;color:var(--muted)">縮</span>
-            <input type="range" id="cropZoomSlider" min="50" max="300" step="1" value="100"
+            <input type="range" id="cropZoomSlider" min="50" max="600" step="1" value="100"
               style="flex:1;accent-color:var(--accent);cursor:pointer"
               oninput="cropZoomFromSlider(this.value)">
             <span style="font-size:0.6rem;color:var(--muted)">拡</span>
@@ -991,7 +991,7 @@ const _crop = {
   baseW: 0, baseH: 0,   // スケール1.0のときのサイズ
   imgW: 0, imgH: 0,     // 現在の表示サイズ
   scale: 1.0,
-  wrapW: 200, wrapH: 260,
+  wrapW: 240, wrapH: 240,
   pinchDist: 0          // ピンチ距離
 };
 
@@ -1063,7 +1063,7 @@ function _cropDragMove(ex, ey) {
 }
 
 function _cropSetScale(s) {
-  s = Math.max(0.5, Math.min(3.0, s));
+  s = Math.max(0.5, Math.min(6.0, s));
   // スケール変更前の中心点を維持
   const cx = _crop.wrapW / 2;
   const cy = _crop.wrapH / 2;
