@@ -1441,8 +1441,8 @@
     "occupation": "極道",
     "category": "極道「天神会」",
     "image": "https://www.dropbox.com/scl/fi/vqih201ptiwavmzp8ejgs/npc.png?rlkey=80wh59gfzlwccekxbvc684wjt&dl=0",
-    "imagePos": "42% 12%",
-    "imageScale": 2.1999999999999997,
+    "imagePos": "39% 13%",
+    "imageScale": 1.55,
     "color": "#28395f",
     "stats": {
       "STR": 12,
