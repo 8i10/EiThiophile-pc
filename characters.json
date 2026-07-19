@@ -2932,8 +2932,8 @@
     "occupation": "刑事(暴力団対策課)",
     "category": "極道「天神会」",
     "image": "https://www.dropbox.com/scl/fi/rhoew9mm3jxea7a1xtxlp/npc.png?rlkey=c6govsmdi4qt92vjs5zlrb92h&dl=0",
-    "imagePos": "45% 3%",
-    "imageScale": 2.2,
+    "imagePos": "37% 2%",
+    "imageScale": 2,
     "color": "#9c27b0",
     "stats": {
       "STR": 17,
