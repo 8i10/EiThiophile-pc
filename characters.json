@@ -2490,8 +2490,8 @@
     "occupation": "殺し屋",
     "category": "四神組",
     "image": "https://www.dropbox.com/scl/fi/6misg4u26c21iw8duhj5e/koma.png?rlkey=tqiet5yx0vcyvd71wjou4brpv&st=my488s40&dl=0",
-    "imagePos": "36% 50%",
-    "imageScale": 0.9999999999999998,
+    "imagePos": "50% 50%",
+    "imageScale": 1.05,
     "color": "#000000",
     "stats": {
       "STR": 15,
