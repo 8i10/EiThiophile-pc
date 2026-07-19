@@ -4294,9 +4294,9 @@
     "birthday": "9/6",
     "occupation": "刑事(捜査第一課)",
     "category": "凪・薙一族",
-    "image": "",
-    "imagePos": "50% 30%",
-    "imageScale": 1.3,
+    "image": "https://www.dropbox.com/scl/fi/vryu28uw2tjoe2h2v4tzk/0.png?rlkey=jrccnsbz0u6k9i72ampgcks38&dl=0",
+    "imagePos": "55% 2%",
+    "imageScale": 3.45,
     "color": "#000000",
     "stats": {
       "STR": 15,
