@@ -1829,8 +1829,8 @@
     "occupation": "魔法使い",
     "category": "無所属(時代違いetc)",
     "image": "https://www.dropbox.com/scl/fi/bc0efvqitx68nwkppa8wy/koma.png?rlkey=6vsv3bxzcl511dmmn0t6uvxng&st=djix05zk&dl=0",
-    "imagePos": "50% 27%",
-    "imageScale": 1.3,
+    "imagePos": "50% 3%",
+    "imageScale": 1.05,
     "color": "#63f5f9",
     "stats": {
       "STR": 14,
