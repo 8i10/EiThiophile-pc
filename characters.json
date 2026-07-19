@@ -2770,8 +2770,8 @@
     "occupation": "極道",
     "category": "極道「天神会」",
     "image": "https://www.dropbox.com/scl/fi/vy3kl8w2hafvdztrpfyrh/npc.png?rlkey=vx0k75jo54u4uga8rdo9p380r&dl=0",
-    "imagePos": "34% 16%",
-    "imageScale": 2.35,
+    "imagePos": "34% 11%",
+    "imageScale": 1.9,
     "color": "#195830",
     "stats": {
       "STR": 17,
