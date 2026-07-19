@@ -1907,8 +1907,8 @@
     "occupation": "特殊強襲部隊(SAT)",
     "category": "無所属(現代日本)",
     "image": "https://www.dropbox.com/scl/fi/n5qqp6opyz926mxy13lqo/9-6.png?rlkey=yfbcdew91n4uk6inla1mw8jdv&dl=0",
-    "imagePos": "50% 50%",
-    "imageScale": 0.9999999999999998,
+    "imagePos": "65% 50%",
+    "imageScale": 1.15,
     "color": "#000000",
     "stats": {
       "STR": 12,
