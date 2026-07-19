@@ -4748,8 +4748,8 @@
     "occupation": "ギャンプラー",
     "category": "中華マフィア「煌」",
     "image": "https://www.dropbox.com/scl/fi/k2xwz7lzcpj7glhiusrzb/koma.png?rlkey=dx0g41w8ayppd7ib5odck0crh&dl=0",
-    "imagePos": "39% 50%",
-    "imageScale": 0.9999999999999998,
+    "imagePos": "50% 50%",
+    "imageScale": 1.05,
     "color": "#ffeb3b",
     "stats": {
       "STR": 12,
