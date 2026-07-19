@@ -3501,8 +3501,8 @@
     "occupation": "ジャーナリスト",
     "category": "極道「天神会」",
     "image": "https://www.dropbox.com/scl/fi/yobx7o9yzp64xww7xksa4/koma.png?rlkey=53y2itvulzl0gc0txs9swei0v&dl=0",
-    "imagePos": "40% 50%",
-    "imageScale": 0.9999999999999998,
+    "imagePos": "50% 50%",
+    "imageScale": 1.15,
     "color": "#b22222",
     "stats": {
       "STR": 15,
