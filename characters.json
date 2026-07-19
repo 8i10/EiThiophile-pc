@@ -2276,8 +2276,8 @@
     "occupation": "刑事",
     "category": "無所属(現代日本)",
     "image": "https://www.dropbox.com/scl/fi/pd1ygxwhuv9jr0glb1kcf/12-2.png?rlkey=kvfqxexc7hb3j8u93yfef6146&dl=0",
-    "imagePos": "28% 50%",
-    "imageScale": 0.9999999999999998,
+    "imagePos": "50% 50%",
+    "imageScale": 1.05,
     "color": "#607d8b",
     "stats": {
       "STR": 10,
